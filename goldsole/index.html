@@ -263,6 +263,19 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
 .size:hover:not([disabled]){border-color:var(--gold)}
 .size.on{background:rgba(201,162,75,.16);border-color:var(--gold2)}
 .size[disabled]{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+.size .stk{display:block;font-size:11px;color:var(--mute)}
+.size .stk.low{color:var(--gold2);font-weight:700}
+.linkbtn{color:var(--mute);font-size:13px}.linkbtn:hover{color:var(--gold2)}
+.adm-note{font-size:13px;color:var(--mute);border:1px dashed var(--line2);padding:12px 14px;margin-bottom:16px;line-height:1.7}
+.adm-note b{color:var(--gold2)}
+.adm-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:14px}
+.adm-wrap{overflow:auto;max-height:56vh;border:1px solid var(--line2)}
+.adm-wrap .tbl th{position:sticky;top:0;background:var(--card);z-index:1}
+.adm-wrap .tbl td:last-child,.adm-wrap .tbl th:last-child{text-align:left}
+.adm-in{width:96px;padding:7px 8px;background:#000;border:1px solid var(--line2);color:var(--ink)}
+.adm-in:focus{outline:none;border-color:var(--gold)}
+.st{font-size:12px;padding:2px 8px;border:1px solid var(--line2);white-space:nowrap}
+.st.ok{color:var(--ok);border-color:var(--ok)}.st.low{color:var(--gold2);border-color:var(--gold)}.st.zero{color:var(--red);border-color:var(--red)}
 .spark{margin:14px 0 20px}
 .spark svg{width:100%;height:56px;display:block}
 .spark-l{display:flex;justify-content:space-between;font-size:12px;color:var(--mute)}
@@ -568,7 +581,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
   <div class="wrap">
     <div class="foot">
       <div><img src="img/logo.svg" alt="GOLDSOLE"><p>한정판 스니커 리셀 플랫폼.<br>모든 상품은 검수 후 배송됩니다.</p></div>
-      <div><h4>고객 안내</h4><ul><li><a href="#process">검수 기준</a></li><li><a href="#member">멤버십·포인트</a></li><li><a href="#shop">전체 상품</a></li></ul></div>
+      <div><h4>고객 안내</h4><ul><li><a href="#process">검수 기준</a></li><li><a href="#member">멤버십·포인트</a></li><li><a href="#shop">전체 상품</a></li><li><button type="button" class="linkbtn" id="adminOpen">재고 관리 (관리자)</button></li></ul></div>
       <div><h4>고객센터</h4><ul><li>전화: 000-0000-0000</li><li>이메일: help@example.com</li><li>평일 10:00–18:00 (점심 12:30–13:30)</li></ul></div>
     </div>
     <div class="legal">
@@ -697,6 +710,14 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
   </div>
 </div>
 
+<!-- admin: 상품 표 / 재고 표 / 입출고 기록 -->
+<div class="ov" id="m-admin" role="dialog" aria-modal="true" aria-label="재고 관리">
+  <div class="modal wide">
+    <button class="m-close" data-close aria-label="닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="m-pad" id="admBody"></div>
+  </div>
+</div>
+
 <div class="toast-wrap" id="toasts" aria-live="polite"></div>
 
 <script>
@@ -754,8 +775,6 @@ PRODUCTS.forEach((p, i) => {
   p.pop = 100 - i * 3 + (p.seed % 4) * 5;
 });
 const byId = id => PRODUCTS.find(p => p.id === id);
-const sizePrice = (p, s) => Math.round(p.price * (1 + (SIZE_OFF[s] || 0)) / 1000) * 1000;
-const soldOut = p => p.out.length >= SIZES.length;
 const pname = p => `${p.brand} ${p.name} ‘${p.cw}’`;
 
 /* ---------- 저장소 ---------- */
@@ -769,6 +788,29 @@ let cart = LS.get('gs_cart', []);
 const me = () => sessionEmail ? users[sessionEmail] : null;
 const saveUsers = () => LS.set('gs_users', users);
 const saveCart = () => LS.set('gs_cart', cart);
+
+/* =========================================================
+   데이터 구조 (DB 표 구조와 동일)
+   · 상품 표  PRODUCTS  : 상품ID(PK), 브랜드, 모델, 컬러, 발매가, 기준가 ...  (상품 1건)
+   · 재고 표  inventory : SKU(PK)=상품ID-사이즈, 상품ID(FK), 사이즈, 재고, 판매가 (상품 1건당 사이즈 수만큼)
+   · 입출고 기록 stockLog : 일시, SKU, 구분(판매/조정), 증감, 비고
+   ========================================================= */
+const INV_KEY = 'gs_inventory', LOG_KEY = 'gs_stocklog';
+const seedInventory = () => PRODUCTS.flatMap(p => SIZES.map(s => ({
+  sku: `${p.id}-${s}`, pid: p.id, size: s,
+  stock: p.out.includes(s) ? 0 : 1 + ((p.seed + s / 10) % 4),
+  price: Math.round(p.price * (1 + (SIZE_OFF[s] || 0)) / 1000) * 1000
+})));
+let inventory = LS.get(INV_KEY, null);
+if (!Array.isArray(inventory) || inventory.length !== PRODUCTS.length * SIZES.length) { inventory = seedInventory(); LS.set(INV_KEY, inventory); }
+let stockLog = LS.get(LOG_KEY, []);
+const saveInventory = () => { LS.set(INV_KEY, inventory); LS.set(LOG_KEY, stockLog.slice(0, 500)); };
+const invRow = (pid, size) => inventory.find(r => r.pid === pid && r.size === size);
+const sizeStock = (pid, size) => (invRow(pid, size) || {}).stock || 0;
+const totalStock = p => inventory.filter(r => r.pid === p.id).reduce((a, r) => a + r.stock, 0);
+const sizePrice = (p, s) => (invRow(p.id, s) || {}).price || p.price;
+const soldOut = p => totalStock(p) === 0;
+const stamp = () => { const d = new Date(), z = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())} ${z(d.getHours())}:${z(d.getMinutes())}`; };
 
 /* ---------- 유틸 ---------- */
 function toast(html) {
@@ -909,11 +951,11 @@ function renderGrid() {
   const cmp = { pop:(a,b)=>b.pop-a.pop, up:(a,b)=>a.price-b.price, down:(a,b)=>b.price-a.price, trend:(a,b)=>b.change-a.change }[fSort];
   list.sort(cmp);
   $('#grid').innerHTML = list.length ? list.map(p => {
-    const so = soldOut(p), w = u && u.wish.includes(p.id), up = p.change >= 0;
+    const so = soldOut(p), ts = totalStock(p), w = u && u.wish.includes(p.id), up = p.change >= 0;
     return `<article class="card">
       <div class="thumb" data-view="${p.id}" tabindex="0" role="button" aria-label="${esc(pname(p))} 상세 보기">
         <img src="img/${p.id}.svg" alt="${esc(pname(p))}" loading="lazy">
-        <div class="tags"><span class="tag-s">한정 ${p.qty.toLocaleString()}족</span>${so?'<span class="tag-s out">품절</span>':p.change>8?'<span class="tag-s hot">급상승</span>':''}</div>
+        <div class="tags"><span class="tag-s">한정 ${p.qty.toLocaleString()}족</span>${so?'<span class="tag-s out">품절</span>':ts<=5?`<span class="tag-s hot">잔여 ${ts}족</span>`:p.change>8?'<span class="tag-s hot">급상승</span>':''}</div>
       </div>
       <button class="wish${w?' on':''}" data-wish="${p.id}" aria-label="찜하기" aria-pressed="${!!w}">${heart}</button>
       <div class="info">
@@ -954,8 +996,8 @@ function renderProduct() {
       <h2>${esc(p.name)} ‘${esc(p.cw)}’</h2>
       <p class="cw">${p.year}년 발매 · 한정 ${p.qty.toLocaleString()}족</p>
       <div class="pd-meta"><div><small>발매가</small><b class="num">${won(p.retail)}</b></div><div><small>최근 거래가</small><b class="num">${won(p.trades.at(-2))}</b></div><div><small>8회 변동</small><b class="trend ${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(p.change).toFixed(1)}%</b></div></div>
-      <strong style="font-size:14px;margin-bottom:10px">사이즈 선택 (mm)</strong>
-      <div class="sizes" role="radiogroup" aria-label="사이즈">${SIZES.map(s => `<button class="size${selSize===s?' on':''}" data-size="${s}" role="radio" aria-checked="${selSize===s}" ${p.out.includes(s)?'disabled':''}><b>${s}</b><small>${p.out.includes(s)?'품절':won(sizePrice(p,s)).replace('원','')}</small></button>`).join('')}</div>
+      <strong style="font-size:14px;margin-bottom:10px">사이즈 선택 (mm) <span style="color:var(--mute);font-weight:400">· 총 재고 ${totalStock(p)}족</span></strong>
+      <div class="sizes" role="radiogroup" aria-label="사이즈">${SIZES.map(s => { const st = sizeStock(p.id, s); return `<button class="size${selSize===s?' on':''}" data-size="${s}" role="radio" aria-checked="${selSize===s}" ${st<1?'disabled':''}><b>${s}</b><small>${st<1?'품절':won(sizePrice(p,s)).replace('원','')}</small>${st<1?'':`<span class="stk${st<=2?' low':''}">${st<=2?`마지막 ${st}족`:`재고 ${st}`}</span>`}</button>`; }).join('')}</div>
       <div class="spark">${spark(p.trades)}<div class="spark-l"><span>최근 거래가 흐름</span><span>검수 통과 상품만 판매</span></div></div>
       <div class="pd-price"><span>${selSize ? selSize + 'mm 즉시구매가' : '사이즈를 선택하세요'}</span><b class="num">${selSize ? won(sizePrice(p, selSize)) : '—'}</b></div>
       ${selSize ? `<p class="note" style="margin:-8px 0 14px;color:var(--gold2)">${u ? t.kr + ' 등급' : '비회원'} 적립 ${u ? t.rate : 1}% · 약 ${pts(Math.floor(sizePrice(p, selSize) * (u ? t.rate : 1) / 100))}</p>` : ''}
@@ -966,13 +1008,14 @@ $('#pdBody').addEventListener('click', e => {
   const s = e.target.closest('[data-size]');
   if (s) { selSize = +s.dataset.size; return renderProduct(); }
   if (e.target.id === 'addCart') { addToCart(curP.id, selSize); closeM('m-product'); openCart(); }
-  if (e.target.id === 'buyNow') { addToCart(curP.id, selSize, true); closeM('m-product'); beginCheckout(); }
+  if (e.target.id === 'buyNow') { if (addToCart(curP.id, selSize, true) === false) return; closeM('m-product'); beginCheckout(); }
 });
 
 /* =========================================================
    CART
    ========================================================= */
 function addToCart(id, size, silent) {
+  if (sizeStock(id, size) < 1) { toast('품절된 사이즈입니다.'); renderProduct(); return false; }
   if (cart.some(c => c.id === id && c.size === size)) { if (!silent) toast('이미 담긴 상품입니다. (상품당 1족)'); return; }
   cart.push({ id, size }); saveCart(); renderCart(); if (!silent) toast('장바구니에 담았습니다.');
 }
@@ -989,7 +1032,7 @@ function renderCart() {
   $('#cartCount').textContent = cart.length || ''; $('#cartCount').dataset.n = cart.length;
   const list = $('#cartList'), foot = $('#cartFoot');
   if (!cart.length) { list.innerHTML = '<div class="empty-s"><b style="display:block;color:var(--ink);font-size:17px;margin-bottom:6px">장바구니가 비어 있습니다</b>마음에 드는 한정판을 담아보세요.</div>'; foot.innerHTML = '<a class="btn btn-gold btn-block" href="#shop" id="goShop">상품 보러 가기</a>'; return; }
-  list.innerHTML = cart.map((c, i) => { const p = byId(c.id); return `<div class="cart-item"><img src="img/${p.id}.svg" alt=""><div><h4>${esc(pname(p))}</h4><small>사이즈 ${c.size}mm</small><div class="p num">${won(sizePrice(p, c.size))}</div></div><button class="rm" data-rm="${i}" aria-label="삭제"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`; }).join('');
+  list.innerHTML = cart.map((c, i) => { const p = byId(c.id); return `<div class="cart-item"><img src="img/${p.id}.svg" alt=""><div><h4>${esc(pname(p))}</h4><small>사이즈 ${c.size}mm${sizeStock(c.id, c.size) < 1 ? ' · <b style="color:var(--red)">품절</b>' : ''}</small><div class="p num">${won(sizePrice(p, c.size))}</div></div><button class="rm" data-rm="${i}" aria-label="삭제"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`; }).join('');
   const k = calc();
   foot.innerHTML = `<div class="sum-row"><span>상품 금액</span><span class="num">${won(k.sub)}</span></div>
     <div class="sum-row"><span>배송비</span><span class="num">${k.ship ? won(k.ship) : '무료'}</span></div>
@@ -1070,6 +1113,11 @@ $('#coForm').addEventListener('submit', async e => {
   let use = useVal(); if (use && use < MIN_USE_POINT) return coError(`포인트는 ${MIN_USE_POINT.toLocaleString()}P 이상부터 사용할 수 있습니다.`, f('usePt'));
   if (use > u.points) return coError('보유 포인트를 초과했습니다.', f('usePt'));
   use = Math.floor(use / 100) * 100;
+  const gone = cart.filter(c => sizeStock(c.id, c.size) < 1);
+  if (gone.length) {
+    cart = cart.filter(c => sizeStock(c.id, c.size) >= 1); saveCart(); renderCart(); renderGrid(); closeM('m-checkout');
+    return toast('재고가 소진된 상품을 장바구니에서 뺐습니다. 다시 확인해 주세요.');
+  }
   const k = calc(cart, use);
   $('#coMsg').hidden = true;
   const btn = $('#payBtn'); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> 결제 진행 중';
@@ -1083,6 +1131,11 @@ $('#coForm').addEventListener('submit', async e => {
     items: cart.map(c => ({ id: c.id, size: c.size, price: sizePrice(byId(c.id), c.size) })), sub: k.sub, ship: k.ship, use: k.use, pay: k.pay, earn: k.earn, rate: k.rate, method: PAY_NAME[payMethod], tx: r.txId, status: '검수 대기',
     to: { name: f('cName').value.trim(), addr: `${f('cAddr').value.trim()} ${f('cAddr2').value.trim()}`.trim() } };
   u.orders.unshift(order);
+  order.items.forEach(i => {   /* 재고 표 차감 + 입출고 기록 */
+    const r = invRow(i.id, i.size); r.stock = Math.max(0, r.stock - 1);
+    stockLog.unshift({ t: stamp(), sku: `${i.id}-${i.size}`, type: '판매', delta: -1, note: order.id });
+  });
+  saveInventory();
   if (k.use) { u.points -= k.use; u.history.unshift({ d: today(), type: '사용', amt: -k.use, desc: `주문 ${order.id} 포인트 사용` }); }
   if (k.earn) { u.points += k.earn; u.history.unshift({ d: today(), type: '적립', amt: k.earn, desc: `주문 ${order.id} · ${k.t.kr} ${k.rate}% 적립` }); }
   u.spent += spentAdd; saveUsers();
@@ -1154,6 +1207,87 @@ $('#amt').addEventListener('input', renderCalc);
 $('#notifyBtn').addEventListener('click', () => {
   const u = me(); if (!u) { authTab('login'); openM('m-auth'); return toast('알림을 받으려면 로그인해 주세요.'); }
   u.notify = true; saveUsers(); toast('입고 알림을 신청했습니다.'); $('#notifyBtn').textContent = '알림 신청 완료'; $('#notifyBtn').disabled = true;
+});
+
+/* =========================================================
+   ADMIN: 상품 표 · 재고 표 · 입출고 기록
+   ※ 데모용 화면입니다. 비밀번호는 코드에 노출되므로 실제 운영에서는 서버 인증으로 바꾸세요.
+   ========================================================= */
+const ADMIN_PASS = 'goldsole1234';
+let admTab = 'products', admFilter = 'all', admResetArmed = false;
+const admOpen = () => { try { return sessionStorage.getItem('gs_adm') === '1'; } catch { return false; } };
+const stBadge = n => n < 1 ? '<span class="st zero">품절</span>' : n <= 2 ? '<span class="st low">부족</span>' : '<span class="st ok">정상</span>';
+function renderAdmin() {
+  const box = $('#admBody');
+  if (!admOpen()) {
+    box.innerHTML = `<form id="admLogin"><h2 class="m-title">관리자 확인</h2><p class="m-sub">재고 관리 화면입니다. 관리자 비밀번호를 입력해 주세요.</p>
+      <div class="f"><label for="admPw">비밀번호</label><input class="field" id="admPw" type="password" autocomplete="off"></div>
+      <div id="admErr" style="color:var(--red);font-size:12px;margin-bottom:12px"></div><button class="btn btn-gold btn-block" type="submit">확인</button></form>`;
+    return;
+  }
+  const tabs = [['products', '상품 표'], ['inventory', '재고 표'], ['log', '입출고 기록']];
+  let body = '', bar = '';
+  if (admTab === 'products') {
+    body = `<table class="tbl"><thead><tr><th>상품ID</th><th>브랜드</th><th>모델</th><th>컬러</th><th>발매가</th><th>기준 판매가</th><th>한정 수량</th><th>발매년</th><th>총 재고</th><th>상태</th></tr></thead><tbody>${PRODUCTS.map(p => { const t = totalStock(p); return `<tr><td class="num">${p.id}</td><td>${p.brand}</td><td>${esc(p.name)}</td><td>${esc(p.cw)}</td><td class="num">${won(p.retail)}</td><td class="num">${won(p.price)}</td><td class="num">${p.qty.toLocaleString()}</td><td class="num">${p.year}</td><td class="num"><b>${t}</b></td><td>${stBadge(t)}</td></tr>`; }).join('')}</tbody></table>`;
+    bar = `<span style="color:var(--mute);font-size:13px">상품 ${PRODUCTS.length}건 · 총 재고 ${inventory.reduce((a, r) => a + r.stock, 0)}족</span><button class="btn btn-ghost btn-sm" data-csv="products">CSV 내려받기</button>`;
+  }
+  if (admTab === 'inventory') {
+    const rows = inventory.filter(r => admFilter === 'all' || r.pid === admFilter);
+    body = `<table class="tbl"><thead><tr><th>SKU</th><th>상품ID</th><th>상품</th><th>사이즈</th><th>재고</th><th>판매가</th><th>상태</th></tr></thead><tbody>${rows.map(r => { const p = byId(r.pid); return `<tr><td class="num">${r.sku}</td><td class="num">${r.pid}</td><td>${esc(pname(p))}</td><td class="num">${r.size}</td><td><input class="adm-in adm-stock" type="number" min="0" step="1" value="${r.stock}" data-sku="${r.sku}" aria-label="${r.sku} 재고"></td><td><input class="adm-in adm-price" type="number" min="0" step="1000" value="${r.price}" data-sku="${r.sku}" aria-label="${r.sku} 판매가"></td><td>${stBadge(r.stock)}</td></tr>`; }).join('')}</tbody></table>`;
+    bar = `<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><select class="field" id="admFilter" aria-label="상품 필터" style="min-height:44px"><option value="all">전체 상품</option>${PRODUCTS.map(p => `<option value="${p.id}"${admFilter === p.id ? ' selected' : ''}>${p.id} · ${esc(pname(p))}</option>`).join('')}</select><span style="color:var(--mute);font-size:13px">${rows.length}건</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" data-csv="inventory">CSV 내려받기</button><button class="btn btn-ghost btn-sm" id="admReset">${admResetArmed ? '한 번 더 누르면 초기화됩니다' : '재고 초기화'}</button><button class="btn btn-gold btn-sm" id="admSave">변경 저장</button></div>`;
+  }
+  if (admTab === 'log') {
+    body = stockLog.length ? `<table class="tbl"><thead><tr><th>일시</th><th>SKU</th><th>구분</th><th>증감</th><th>비고</th></tr></thead><tbody>${stockLog.slice(0, 200).map(l => `<tr><td class="num">${l.t}</td><td class="num">${l.sku}</td><td>${l.type}</td><td class="num ${l.delta > 0 ? 'plus' : 'minus'}">${l.delta > 0 ? '+' : ''}${l.delta}</td><td>${esc(l.note || '')}</td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">아직 입출고 기록이 없습니다.<br>주문이 들어오거나 재고를 수정하면 여기에 쌓입니다.</div>';
+    bar = `<span style="color:var(--mute);font-size:13px">최근 ${Math.min(stockLog.length, 200)}건</span><button class="btn btn-ghost btn-sm" data-csv="log">CSV 내려받기</button>`;
+  }
+  box.innerHTML = `<h2 class="m-title">재고 관리</h2><p class="m-sub">상품 표와 재고 표를 나눠 관리합니다.</p>
+    <div class="adm-note">상품 표 <b>1건</b> → 재고 표 <b>사이즈 수(${SIZES.length})건</b>. 두 표는 <b>상품ID</b>로 연결되고, 재고 표의 기본키는 <b>SKU(상품ID-사이즈)</b>입니다.</div>
+    <div class="tabs">${tabs.map(([k, v]) => `<button data-adm="${k}" class="${admTab === k ? 'on' : ''}">${v}</button>`).join('')}</div>
+    <div class="adm-bar">${bar}</div><div class="adm-wrap">${body}</div>`;
+}
+function downloadCsv(name, headers, rows) {
+  const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const text = '\ufeff' + [headers, ...rows].map(r => r.map(q).join(',')).join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 500);
+}
+$('#adminOpen').addEventListener('click', () => { admResetArmed = false; renderAdmin(); openM('m-admin'); setTimeout(() => { const i = $('#admPw'); if (i) i.focus(); }, 50); });
+$('#admBody').addEventListener('submit', e => {
+  if (e.target.id !== 'admLogin') return; e.preventDefault();
+  if ($('#admPw').value === ADMIN_PASS) { try { sessionStorage.setItem('gs_adm', '1'); } catch {} renderAdmin(); }
+  else $('#admErr').textContent = '비밀번호가 맞지 않습니다.';
+});
+$('#admBody').addEventListener('change', e => { if (e.target.id === 'admFilter') { admFilter = e.target.value; renderAdmin(); } });
+$('#admBody').addEventListener('click', e => {
+  const t = e.target.closest('[data-adm]'); if (t) { admTab = t.dataset.adm; admResetArmed = false; return renderAdmin(); }
+  const c = e.target.closest('[data-csv]');
+  if (c) {
+    const k = c.dataset.csv;
+    if (k === 'products') downloadCsv('products.csv', ['product_id','brand','model','colorway','retail_price','base_price','limited_qty','release_year','total_stock'], PRODUCTS.map(p => [p.id, p.brand, p.name, p.cw, p.retail, p.price, p.qty, p.year, totalStock(p)]));
+    if (k === 'inventory') downloadCsv('inventory.csv', ['sku','product_id','size','stock','price'], inventory.map(r => [r.sku, r.pid, r.size, r.stock, r.price]));
+    if (k === 'log') downloadCsv('stock_log.csv', ['time','sku','type','delta','note'], stockLog.map(l => [l.t, l.sku, l.type, l.delta, l.note]));
+    return;
+  }
+  if (e.target.id === 'admSave') {
+    let changed = 0, bad = false;
+    $$('.adm-stock', $('#admBody')).forEach(inp => {
+      const r = inventory.find(x => x.sku === inp.dataset.sku), v = Number(inp.value);
+      if (!Number.isInteger(v) || v < 0) { bad = true; inp.classList.add('bad'); return; }
+      if (v !== r.stock) { stockLog.unshift({ t: stamp(), sku: r.sku, type: '조정', delta: v - r.stock, note: '관리자 수정' }); r.stock = v; changed++; }
+    });
+    $$('.adm-price', $('#admBody')).forEach(inp => {
+      const r = inventory.find(x => x.sku === inp.dataset.sku), v = Number(inp.value);
+      if (!Number.isInteger(v) || v < 0) { bad = true; inp.classList.add('bad'); return; }
+      if (v !== r.price) { r.price = v; changed++; }
+    });
+    if (bad) return toast('재고와 판매가는 0 이상의 정수로 입력해 주세요.');
+    saveInventory(); renderAdmin(); renderGrid(); renderCart();
+    return toast(changed ? `<b>${changed}건</b>을 저장했습니다.` : '변경된 내용이 없습니다.');
+  }
+  if (e.target.id === 'admReset') {
+    if (!admResetArmed) { admResetArmed = true; renderAdmin(); return; }
+    inventory = seedInventory(); stockLog = []; admResetArmed = false; saveInventory(); renderAdmin(); renderGrid(); renderCart(); toast('재고를 처음 상태로 되돌렸습니다.');
+  }
 });
 
 /* =========================================================
