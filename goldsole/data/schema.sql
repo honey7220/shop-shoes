@@ -35,5 +35,5 @@ SELECT p.product_id, p.brand, p.model, p.colorway, SUM(i.stock) AS total_stock
 FROM products p JOIN inventory i ON i.product_id = p.product_id
 GROUP BY p.product_id, p.brand, p.model, p.colorway;
 
--- 품절/부족 사이즈 (재고 2족 이하)
+-- 품절/부족 사이즈 (재고 2켤레 이하)
 SELECT sku, size, stock FROM inventory WHERE stock <= 2 ORDER BY stock, sku;

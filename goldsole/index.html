@@ -955,7 +955,7 @@ function renderGrid() {
     return `<article class="card">
       <div class="thumb" data-view="${p.id}" tabindex="0" role="button" aria-label="${esc(pname(p))} 상세 보기">
         <img src="img/${p.id}.svg" alt="${esc(pname(p))}" loading="lazy">
-        <div class="tags"><span class="tag-s">한정 ${p.qty.toLocaleString()}족</span>${so?'<span class="tag-s out">품절</span>':ts<=5?`<span class="tag-s hot">잔여 ${ts}족</span>`:p.change>8?'<span class="tag-s hot">급상승</span>':''}</div>
+        <div class="tags"><span class="tag-s">한정 ${p.qty.toLocaleString()}켤레</span>${so?'<span class="tag-s out">품절</span>':ts<=5?`<span class="tag-s hot">잔여 ${ts}켤레</span>`:p.change>8?'<span class="tag-s hot">급상승</span>':''}</div>
       </div>
       <button class="wish${w?' on':''}" data-wish="${p.id}" aria-label="찜하기" aria-pressed="${!!w}">${heart}</button>
       <div class="info">
@@ -994,10 +994,10 @@ function renderProduct() {
     <div class="pd-body">
       <span class="brand">${p.brand}</span>
       <h2>${esc(p.name)} ‘${esc(p.cw)}’</h2>
-      <p class="cw">${p.year}년 발매 · 한정 ${p.qty.toLocaleString()}족</p>
+      <p class="cw">${p.year}년 발매 · 한정 ${p.qty.toLocaleString()}켤레</p>
       <div class="pd-meta"><div><small>발매가</small><b class="num">${won(p.retail)}</b></div><div><small>최근 거래가</small><b class="num">${won(p.trades.at(-2))}</b></div><div><small>8회 변동</small><b class="trend ${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(p.change).toFixed(1)}%</b></div></div>
-      <strong style="font-size:14px;margin-bottom:10px">사이즈 선택 (mm) <span style="color:var(--mute);font-weight:400">· 총 재고 ${totalStock(p)}족</span></strong>
-      <div class="sizes" role="radiogroup" aria-label="사이즈">${SIZES.map(s => { const st = sizeStock(p.id, s); return `<button class="size${selSize===s?' on':''}" data-size="${s}" role="radio" aria-checked="${selSize===s}" ${st<1?'disabled':''}><b>${s}</b><small>${st<1?'품절':won(sizePrice(p,s)).replace('원','')}</small>${st<1?'':`<span class="stk${st<=2?' low':''}">${st<=2?`마지막 ${st}족`:`재고 ${st}`}</span>`}</button>`; }).join('')}</div>
+      <strong style="font-size:14px;margin-bottom:10px">사이즈 선택 (mm) <span style="color:var(--mute);font-weight:400">· 총 재고 ${totalStock(p)}켤레</span></strong>
+      <div class="sizes" role="radiogroup" aria-label="사이즈">${SIZES.map(s => { const st = sizeStock(p.id, s); return `<button class="size${selSize===s?' on':''}" data-size="${s}" role="radio" aria-checked="${selSize===s}" ${st<1?'disabled':''}><b>${s}</b><small>${st<1?'품절':won(sizePrice(p,s)).replace('원','')}</small>${st<1?'':`<span class="stk${st<=2?' low':''}">${st<=2?`마지막 ${st}켤레`:`재고 ${st}`}</span>`}</button>`; }).join('')}</div>
       <div class="spark">${spark(p.trades)}<div class="spark-l"><span>최근 거래가 흐름</span><span>검수 통과 상품만 판매</span></div></div>
       <div class="pd-price"><span>${selSize ? selSize + 'mm 즉시구매가' : '사이즈를 선택하세요'}</span><b class="num">${selSize ? won(sizePrice(p, selSize)) : '—'}</b></div>
       ${selSize ? `<p class="note" style="margin:-8px 0 14px;color:var(--gold2)">${u ? t.kr + ' 등급' : '비회원'} 적립 ${u ? t.rate : 1}% · 약 ${pts(Math.floor(sizePrice(p, selSize) * (u ? t.rate : 1) / 100))}</p>` : ''}
@@ -1016,7 +1016,7 @@ $('#pdBody').addEventListener('click', e => {
    ========================================================= */
 function addToCart(id, size, silent) {
   if (sizeStock(id, size) < 1) { toast('품절된 사이즈입니다.'); renderProduct(); return false; }
-  if (cart.some(c => c.id === id && c.size === size)) { if (!silent) toast('이미 담긴 상품입니다. (상품당 1족)'); return; }
+  if (cart.some(c => c.id === id && c.size === size)) { if (!silent) toast('이미 담긴 상품입니다. (상품당 1켤레)'); return; }
   cart.push({ id, size }); saveCart(); renderCart(); if (!silent) toast('장바구니에 담았습니다.');
 }
 function calc(items = cart, use = 0) {
@@ -1229,7 +1229,7 @@ function renderAdmin() {
   let body = '', bar = '';
   if (admTab === 'products') {
     body = `<table class="tbl"><thead><tr><th>상품ID</th><th>브랜드</th><th>모델</th><th>컬러</th><th>발매가</th><th>기준 판매가</th><th>한정 수량</th><th>발매년</th><th>총 재고</th><th>상태</th></tr></thead><tbody>${PRODUCTS.map(p => { const t = totalStock(p); return `<tr><td class="num">${p.id}</td><td>${p.brand}</td><td>${esc(p.name)}</td><td>${esc(p.cw)}</td><td class="num">${won(p.retail)}</td><td class="num">${won(p.price)}</td><td class="num">${p.qty.toLocaleString()}</td><td class="num">${p.year}</td><td class="num"><b>${t}</b></td><td>${stBadge(t)}</td></tr>`; }).join('')}</tbody></table>`;
-    bar = `<span style="color:var(--mute);font-size:13px">상품 ${PRODUCTS.length}건 · 총 재고 ${inventory.reduce((a, r) => a + r.stock, 0)}족</span><button class="btn btn-ghost btn-sm" data-csv="products">CSV 내려받기</button>`;
+    bar = `<span style="color:var(--mute);font-size:13px">상품 ${PRODUCTS.length}건 · 총 재고 ${inventory.reduce((a, r) => a + r.stock, 0)}켤레</span><button class="btn btn-ghost btn-sm" data-csv="products">CSV 내려받기</button>`;
   }
   if (admTab === 'inventory') {
     const rows = inventory.filter(r => admFilter === 'all' || r.pid === admFilter);
