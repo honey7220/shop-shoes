@@ -1084,7 +1084,7 @@ const rndSalt = () => { const a = new Uint8Array(12); (window.crypto || {getRand
 const T = { profiles: 'shop_profiles', products: 'shop_products', orders: 'shop_orders', items: 'shop_order_items' };
 let sbUid = null, sbProfile = null, sbError = '';
 const isAdminUser = () => !!(sbProfile && sbProfile.role === 'admin');
-const DB_STATUS = { paid: '결제완료', ship: '배송중', done: '배송완료', cancel: '취소' };
+const DB_STATUS = { paid: '결제완료', insp: '검수중', pack: '포장중', ship: '배송중', done: '배송완료', cancel: '취소' };   // shop_orders_status_check 와 같은 6개 값 (shop_extras.sql 이 검수중·포장중을 추가)
 const sbMsg = e => (e && e.message) ? e.message : String(e);
 
 /* ② 상품 목록 : shop_products 에서 읽어 옵니다 (id, name, category, price, stock, image_url, is_active) */
@@ -1126,7 +1126,9 @@ async function loadMyOrders() {
   return q.data;
 }
 function mapStatusFromDb(o, dbStatus, u) {
-  if (dbStatus === DB_STATUS.paid) { if (![ST.WAIT, ST.INSP, ST.PASS, ST.PACK].includes(o.status)) o.status = ST.WAIT; }
+  if (dbStatus === DB_STATUS.paid) { if (o.status !== ST.WAIT) { o.status = ST.WAIT; o.insp = null; } }
+  else if (dbStatus === DB_STATUS.insp && o.status !== ST.INSP) pushHist(o, ST.INSP, '검수팀 확인 중');
+  else if (dbStatus === DB_STATUS.pack && o.status !== ST.PACK) { if (!(o.hist || []).some(x => x.s === ST.INSP)) pushHist(o, ST.INSP); pushHist(o, ST.PASS, '정품 확인'); pushHist(o, ST.PACK, '전용 박스 포장'); o.insp = { result: '합격', pass: true, t: stamp() }; }
   else if (dbStatus === DB_STATUS.ship && o.status !== ST.SHIP) { o.track = o.track || { courier: 'CJ대한통운', no: String(100000000000 + o.dbId * 7919) }; pushHist(o, ST.SHIP, `${o.track.courier} ${o.track.no}`); }
   else if (dbStatus === DB_STATUS.done && o.status !== ST.DONE) { o.track = o.track || { courier: 'CJ대한통운', no: String(100000000000 + o.dbId * 7919) }; pushHist(o, ST.DONE); }
   else if (dbStatus === DB_STATUS.cancel && ![ST.CANCEL, ST.REFUND].includes(o.status)) refundOrder(u, o, '주문 취소', ST.CANCEL);
@@ -1595,7 +1597,7 @@ function orderHtml(o) {
   let h = `<h2 class="m-title">주문 상세</h2><p class="m-sub"><span class="num">${o.id}</span> · ${o.d} <span class="stat ${statCls(o.status)}" style="margin-left:6px">${o.status}</span></p>`;
   h += `<h4 style="margin:0 0 4px;font-size:14px">진행 상황</h4>` + orderTL(o);
   if (o.insp) h += o.insp.result === '합격'
-    ? `<div class="box ok"><h4>검수 결과 · 정품 확인</h4><p>상태 등급 <b style="color:var(--ok)">${o.insp.grade}</b> — ${GRADE[o.insp.grade]}</p>${o.insp.note ? `<p style="color:var(--mute);margin-top:4px">${esc(o.insp.note)}</p>` : ''}</div>`
+    ? `<div class="box ok"><h4>검수 결과 · 정품 확인</h4>${o.insp.grade ? `<p>상태 등급 <b style="color:var(--ok)">${o.insp.grade}</b> — ${GRADE[o.insp.grade]}</p>` : '<p>정품으로 확인되었습니다.</p>'}${o.insp.note ? `<p style="color:var(--mute);margin-top:4px">${esc(o.insp.note)}</p>` : ''}</div>`
     : `<div class="box bad"><h4>검수 불합격</h4><p>${esc(o.insp.note)}</p><p style="color:var(--mute);margin-top:4px">결제하신 금액은 전액 환불됩니다.</p></div>`;
   if (o.track) {
     const hh = o.hist || [], st = hh.find(x => x.s === ST.SHIP), dn = hh.find(x => x.s === ST.DONE);
@@ -1795,9 +1797,10 @@ async function sbAdminOrders() {
       db.from(T.profiles).select('id, name, email')]);
     if (o.error) throw o.error; if (it.error) throw it.error; if (pf.error) throw pf.error;
     const who = Object.fromEntries(pf.data.map(x => [x.id, x]));
-    const act = x => x.status === DB_STATUS.paid ? `<button class="btn btn-gold btn-sm" data-dbact="ship" data-id="${x.id}">배송 시작</button> <button class="btn btn-ghost btn-sm" data-dbact="cancel" data-id="${x.id}">취소·환불</button>`
-      : x.status === DB_STATUS.ship ? `<button class="btn btn-gold btn-sm" data-dbact="done" data-id="${x.id}">배송 완료</button> <button class="btn btn-ghost btn-sm" data-dbact="cancel" data-id="${x.id}">취소·환불</button>` : '<span style="color:var(--dim)">—</span>';
-    const cls = { '결제완료': 's-ing', '배송중': 's-ship', '배송완료': 's-pass', '취소': 's-bad' };
+    const bt = (a, label, gold) => `<button class="btn ${gold ? 'btn-gold' : 'btn-ghost'} btn-sm" data-dbact="${a}" data-id="__ID__">${label}</button>`;
+    const flow = { [DB_STATUS.paid]: [bt('insp', '검수 시작', 1), bt('cancel', '취소·환불')], [DB_STATUS.insp]: [bt('pass', '검수 합격 · 포장', 1), bt('fail', '불합격(환불)')], [DB_STATUS.pack]: [bt('ship', '배송 시작', 1), bt('cancel', '취소·환불')], [DB_STATUS.ship]: [bt('done', '배송 완료', 1), bt('cancel', '취소·환불')] };
+    const act = x => flow[x.status] ? flow[x.status].join(' ').replace(/__ID__/g, x.id) : '<span style="color:var(--dim)">—</span>';
+    const cls = { '결제완료': 's-ing', '검수중': 's-ing', '포장중': 's-ing', '배송중': 's-ship', '배송완료': 's-pass', '취소': 's-bad' };
     if (!wrap()) return;
     wrap().innerHTML = o.data.length ? `<table class="tbl"><thead><tr><th>주문번호</th><th>회원</th><th>상품</th><th>결제금액</th><th>상태</th><th>처리</th></tr></thead><tbody>${o.data.map(x => `<tr>
       <td class="num">#${x.id}<br><small style="color:var(--mute)">${String(x.created_at).slice(0, 16).replace('T', ' ')}</small></td>
@@ -1808,9 +1811,9 @@ async function sbAdminOrders() {
 }
 async function sbAdminAct(act, id) {
   try {
-    if (act === 'cancel') { const q = await db.rpc('shop_cancel_order', { p_order_id: id }); if (q.error) throw q.error; }
-    else { const q = await db.from(T.orders).update({ status: act === 'ship' ? DB_STATUS.ship : DB_STATUS.done }).eq('id', id).select('id'); if (q.error) throw q.error; if (!q.data.length) throw new Error('변경된 주문이 없습니다 (관리자 권한 확인)'); }   // UPDATE shop_orders SET status = ... WHERE id = ...
-    toast(`주문 <b>#${id}</b> 상태를 바꿨습니다.`); renderAdmin(); await sbRefresh(); refreshViews();
+    if (act === 'cancel' || act === 'fail') { const q = await db.rpc('shop_cancel_order', { p_order_id: id }); if (q.error) throw q.error; }
+    else { const next = { insp: DB_STATUS.insp, pass: DB_STATUS.pack, ship: DB_STATUS.ship, done: DB_STATUS.done }[act]; const q = await db.from(T.orders).update({ status: next }).eq('id', id).select('id'); if (q.error) throw q.error; if (!q.data.length) throw new Error('변경된 주문이 없습니다 (관리자 권한 확인)'); }   // UPDATE shop_orders SET status = ... WHERE id = ...
+    toast(act === 'fail' ? `주문 <b>#${id}</b> 검수 불합격 · 전액 환불했습니다.` : `주문 <b>#${id}</b> 상태를 바꿨습니다.`); renderAdmin(); await sbRefresh(); refreshViews();
   } catch (e) { toast('처리 실패: ' + esc(sbMsg(e))); }
 }
 function downloadCsv(name, headers, rows) {

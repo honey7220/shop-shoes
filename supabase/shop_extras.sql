@@ -5,12 +5,18 @@
 --   · shop_grade_for / shop_grade_rate : 등급 기준 · 적립률 함수
 --   · shop_settle_order : 결제 직후 재고 · 포인트 · 등급을 DB 안에서 반영
 --   · shop_cancel_order : 주문 취소(재고 · 포인트 되돌림)
+--   · 주문 상태 값 추가 : '검수중', '포장중' (shop_orders_status_check 만 넓힘. 표 · 열 이름은 그대로)
 --   · 상품 12개 (예시 상품 6개는 주문이 없으면 삭제)
 -- 왜 함수인가: shop_profiles 의 points · grade 는 보안 규칙상 회원이 직접 고칠 수 없습니다.
 --              (shop_supabase.sql 에서 UPDATE 권한을 name, phone 에만 줬기 때문)
 --              그래서 DB 안의 함수가 대신 계산해서 고칩니다. 화면에서 숫자를 보내도 믿지 않고 DB 의 값으로 다시 계산합니다.
 -- 사용법: SQL Editor → New query → 전체 붙여넣기 → Run (두 번 실행해도 안전)
 -- ============================================================
+
+-- 0. 주문 상태 값 넓히기: 결제완료 → 검수중 → 포장중 → 배송중 → 배송완료 (취소는 어느 단계에서나 관리자가 가능)
+ALTER TABLE public.shop_orders DROP CONSTRAINT IF EXISTS shop_orders_status_check;
+ALTER TABLE public.shop_orders ADD CONSTRAINT shop_orders_status_check
+  CHECK (status IN ('결제완료', '검수중', '포장중', '배송중', '배송완료', '취소'));
 
 -- 1. 주문별 포인트 기록
 CREATE TABLE IF NOT EXISTS public.shop_order_points (
@@ -95,7 +101,7 @@ BEGIN
 END;
 $fn$;
 
--- 4. 주문 취소: 본인은 '결제완료' 상태일 때만, 관리자는 배송중까지. 재고 · 포인트 · 등급을 되돌린다
+-- 4. 주문 취소: 본인은 '결제완료'(검수 시작 전)일 때만, 관리자는 배송중까지. 재고 · 포인트 · 등급을 되돌린다
 CREATE OR REPLACE FUNCTION public.shop_cancel_order(p_order_id bigint)
 RETURNS void
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
@@ -111,7 +117,7 @@ BEGIN
   IF NOT (v_ord.user_id = v_uid OR public.shop_is_admin()) THEN RAISE EXCEPTION '권한이 없습니다' USING ERRCODE = '42501'; END IF;
   IF v_ord.status = '취소' THEN RAISE EXCEPTION '이미 취소된 주문입니다'; END IF;
   IF v_ord.status = '배송완료' THEN RAISE EXCEPTION '배송이 끝난 주문은 취소할 수 없습니다'; END IF;
-  IF v_ord.status = '배송중' AND NOT public.shop_is_admin() THEN RAISE EXCEPTION '배송이 시작된 주문은 취소할 수 없습니다'; END IF;
+  IF v_ord.status <> '결제완료' AND NOT public.shop_is_admin() THEN RAISE EXCEPTION '검수가 시작된 주문은 취소할 수 없습니다'; END IF;
 
   SELECT * INTO v_pt FROM public.shop_order_points WHERE order_id = p_order_id;
   IF FOUND THEN
