@@ -91,7 +91,8 @@ header.top{position:sticky;top:0;z-index:50;background:rgba(5,5,5,.86);backdrop-
 .hero{background-image:radial-gradient(ellipse 60% 70% at 70% 60%,rgba(201,162,75,.2),rgba(0,0,0,0) 70%);position:relative;height:min(84vh,740px);min-height:560px;overflow:hidden;background:#000;isolation:isolate}
 .slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity 1s ease,visibility 1s}
 .slide.on{opacity:1;visibility:visible}
-.slide>img{position:absolute;top:0;right:0;width:56%;height:100%;object-fit:contain;object-position:center 56%;transform:scale(1.04);filter:drop-shadow(0 30px 30px rgba(0,0,0,.6));transition:transform 7.5s cubic-bezier(.2,.6,.2,1)}
+.slide>img{position:absolute;top:13%;right:6%;width:46%;height:66%;object-fit:contain;object-position:center center;transform:scale(1.03);filter:drop-shadow(0 26px 22px rgba(0,0,0,.7));transition:transform 7.5s cubic-bezier(.2,.6,.2,1)}
+.slide::before{content:"";position:absolute;right:5%;bottom:27%;width:50%;height:80px;background:radial-gradient(ellipse at 50% 50%,rgba(201,162,75,.38),rgba(201,162,75,0) 68%);filter:blur(6px);z-index:0}
 .slide.on>img{transform:scale(1)}
 .slide::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#000 0%,rgba(0,0,0,.85) 28%,rgba(0,0,0,.35) 48%,rgba(0,0,0,0) 62%),linear-gradient(0deg,#050505 0%,rgba(5,5,5,0) 30%)}
 .slide .copy{position:absolute;z-index:2;left:max(28px,calc((100vw - var(--wrap))/2 + 28px));top:50%;transform:translateY(-52%);max-width:560px}
@@ -454,7 +455,8 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
   .calc{grid-template-columns:1fr}
   .foot{grid-template-columns:1fr 1fr}
   .hero{min-height:680px}
-  .slide>img{width:100%;height:46%;object-position:center center}
+  .slide>img{top:3%;right:6%;width:88%;height:40%}
+  .slide::before{right:6%;bottom:auto;top:29%;width:88%;height:44px}
   .slide::after{background:linear-gradient(0deg,#050505 0%,#050505 38%,rgba(5,5,5,0) 66%)}
   .slide .copy{top:auto;bottom:112px;transform:none;right:24px}
   .user-chip span.t{display:none}
