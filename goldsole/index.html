@@ -977,9 +977,9 @@ const maskName = n => n.length >= 3 ? n[0] + '*'.repeat(n.length - 2) + n.at(-1)
 const starStr = n => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
 
 /* ---------- 주문 상태 ---------- */
-const ST = { WAIT:'검수 대기', INSP:'검수 중', PASS:'검수 합격', SHIP:'배송중', DONE:'배송 완료', CANCEL:'취소 완료', REFUND:'환불 완료' };
+const ST = { WAIT:'검수 대기', INSP:'검수 중', PASS:'검수 합격', PACK:'포장 중', SHIP:'배송중', DONE:'배송 완료', CANCEL:'취소 완료', REFUND:'환불 완료' };
 const GRADE = { S:'새 상품 · 박스까지 완전한 상태', A:'새 상품 · 박스에 미세한 흠집', B:'새 상품 · 박스 눌림 등 경미한 보관 흔적' };
-const statCls = st => ({ '검수 중':'s-ing', '검수 합격':'s-pass', '배송중':'s-ship', '배송 완료':'s-pass', '취소 완료':'s-bad', '환불 완료':'s-bad' })[st] || '';
+const statCls = st => ({ '검수 중':'s-ing', '검수 합격':'s-pass', '포장 중':'s-ing', '배송중':'s-ship', '배송 완료':'s-pass', '취소 완료':'s-bad', '환불 완료':'s-bad' })[st] || '';
 function pushHist(o, st, note) { if (!o.hist) o.hist = [{ s: '주문 접수', t: o.d }]; o.hist.push({ s: st, t: stamp(), note }); o.status = st; }
 const allOrders = () => Object.values(users).flatMap(u => (u.orders || []).map(o => ({ u, o })));
 /* 취소·검수 불합격 환불: 재고 복원, 사용 포인트 복원, 적립 포인트 회수, 쿠폰 복원, 누적금액 차감 */
@@ -1421,7 +1421,7 @@ $('#myBody').addEventListener('click', e => {
 /* ---------- 주문 상세 · 배송 조회 · 검수 결과 · 취소 ---------- */
 function orderTL(o) {
   const h = o.hist || [{ s: '주문 접수', t: o.d }], at = s => (h.find(x => x.s === s) || {}).t;
-  const base = ['주문 접수', ST.INSP, ST.PASS, ST.SHIP, ST.DONE], end = [ST.CANCEL, ST.REFUND].includes(o.status);
+  const base = ['주문 접수', ST.INSP, ST.PASS, ST.PACK, ST.SHIP, ST.DONE], end = [ST.CANCEL, ST.REFUND].includes(o.status);
   const steps = (end ? base.filter(s => s === '주문 접수' || at(s)) : base).map(s => ({ s, t: at(s), on: !!at(s) }));
   if (end) steps.push({ s: o.status, t: at(o.status), on: true, bad: true });
   return `<ul class="tl">${steps.map(x => `<li class="${x.on ? 'on' : ''}${x.bad ? ' bad' : ''}">${x.s === '주문 접수' ? '주문 접수 · 결제 완료' : x.s}${x.t ? `<small>${x.t}</small>` : ''}</li>`).join('')}</ul>`;
@@ -1442,7 +1442,7 @@ function orderHtml(o) {
   if (o.refund) h += `<div class="box bad"><h4>${o.status} · ${esc(o.refund.reason)}</h4><dl class="od-grid"><dt>환불 금액</dt><dd class="num">${won(o.refund.amt)}</dd><dt>사용 포인트 복원</dt><dd class="num">${o.refund.back ? '+' + pts(o.refund.back) : '—'}</dd><dt>적립 포인트 회수</dt><dd class="num">${o.refund.revoked ? '-' + pts(o.refund.revoked) : '—'}</dd><dt>처리 일시</dt><dd class="num">${o.refund.t}</dd></dl><p style="color:var(--mute);margin-top:8px">결제수단 환불은 카드사·결제사에 따라 영업일 기준 3~5일이 걸릴 수 있어요.</p></div>`;
   h += `<div class="box"><h4>배송지</h4><p>${esc(o.to.name)}<br>${esc(o.to.addr)}</p></div>`;
   if (o.status === ST.WAIT) h += `<button class="btn btn-ghost btn-block" id="cancelOrder">${cancelArmed === o.id ? '한 번 더 누르면 주문이 취소됩니다' : '주문 취소'}</button><p class="note">검수가 시작되기 전까지 취소할 수 있어요. 취소하면 결제 금액이 환불되고 사용한 포인트·쿠폰이 돌아옵니다.</p>`;
-  else if (o.status === ST.INSP || o.status === ST.PASS) h += `<p class="note">검수가 시작된 주문은 취소할 수 없어요. 검수를 통과하지 못하면 전액 환불됩니다.</p>`;
+  else if ([ST.INSP, ST.PASS, ST.PACK].includes(o.status)) h += `<p class="note">검수가 시작된 주문은 취소할 수 없어요. 검수를 통과하지 못하면 전액 환불됩니다.</p>`;
   return h;
 }
 function renderOrder() { const u = me(), o = u && u.orders.find(x => x.id === curOrder); if (o) $('#orderBody').innerHTML = orderHtml(o); }
@@ -1597,7 +1597,7 @@ function renderAdmin() {
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" data-csv="inventory">CSV 내려받기</button><button class="btn btn-ghost btn-sm" id="admReset">${admResetArmed ? '한 번 더 누르면 초기화됩니다' : '재고 초기화'}</button><button class="btn btn-gold btn-sm" id="admSave">변경 저장</button></div>`;
   }
   if (admTab === 'orders') {
-    const list = allOrders().sort((a, b) => b.o.id.localeCompare(a.o.id)), open = list.filter(x => [ST.WAIT, ST.INSP, ST.PASS, ST.SHIP].includes(x.o.status)).length;
+    const list = allOrders().sort((a, b) => b.o.id.localeCompare(a.o.id)), open = list.filter(x => [ST.WAIT, ST.INSP, ST.PASS, ST.PACK, ST.SHIP].includes(x.o.status)).length;
     body = list.length ? `<table class="tbl"><thead><tr><th>주문번호</th><th>고객</th><th>상품</th><th>결제</th><th>상태</th><th>처리</th></tr></thead><tbody>${list.map(({ u, o }) => `<tr><td class="num">${o.id}<br><small style="color:var(--mute)">${o.d}</small></td><td>${esc(u.name)}<br><small style="color:var(--mute)">${esc(u.email)}</small></td><td>${o.items.map(i => `${esc(pname(byId(i.id)))} (${i.size})`).join('<br>')}</td><td class="num">${won(o.pay)}</td><td><span class="stat ${statCls(o.status)}">${o.status}</span></td><td>${admActions(o)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">아직 주문이 없습니다.<br>쇼핑몰에서 주문하면 여기에 나타납니다.</div>';
     bar = `<span style="color:var(--mute);font-size:13px">주문 ${list.length}건 · 처리 필요 ${open}건</span><span style="color:var(--dim);font-size:12px">이 브라우저에 저장된 주문만 보입니다</span>`;
   }
@@ -1626,7 +1626,8 @@ const admActions = o => {
   const id = o.id;
   if (o.status === ST.WAIT) return `<button class="btn btn-ghost btn-sm" data-oact="start" data-o="${id}">검수 시작</button>`;
   if (o.status === ST.INSP) return `<div style="display:grid;gap:6px;min-width:210px"><select class="field adm-grade" data-o="${id}">${Object.keys(GRADE).map(g => `<option value="${g}">상태 ${g}등급</option>`).join('')}</select><input class="adm-in" style="width:100%" id="note-${id}" placeholder="검수 메모(선택)"><div style="display:flex;gap:6px"><button class="btn btn-gold btn-sm" data-oact="pass" data-o="${id}">합격</button><button class="btn btn-ghost btn-sm" data-oact="fail" data-o="${id}">불합격(환불)</button></div></div>`;
-  if (o.status === ST.PASS) return `<div style="display:grid;gap:6px;min-width:170px"><select class="field adm-courier" data-o="${id}"><option>CJ대한통운</option><option>한진택배</option><option>롯데택배</option><option>우체국택배</option></select><button class="btn btn-gold btn-sm" data-oact="ship" data-o="${id}">배송 시작</button></div>`;
+  if (o.status === ST.PASS) return `<button class="btn btn-ghost btn-sm" data-oact="pack" data-o="${id}">포장 시작</button>`;
+  if (o.status === ST.PACK) return `<div style="display:grid;gap:6px;min-width:170px"><select class="field adm-courier" data-o="${id}"><option>CJ대한통운</option><option>한진택배</option><option>롯데택배</option><option>우체국택배</option></select><button class="btn btn-gold btn-sm" data-oact="ship" data-o="${id}">배송 시작</button></div>`;
   if (o.status === ST.SHIP) return `<button class="btn btn-gold btn-sm" data-oact="done" data-o="${id}">배송 완료 처리</button>`;
   return '<span style="color:var(--dim)">—</span>';
 };
@@ -1636,6 +1637,7 @@ function admOrderAct(act, id) {
   if (act === 'start') pushHist(o, ST.INSP);
   if (act === 'pass') { const g = $(`.adm-grade[data-o="${id}"]`).value; o.insp = { result: '합격', grade: g, note, t: stamp() }; pushHist(o, ST.PASS, `정품 확인 · 상태 ${g}등급`); }
   if (act === 'fail') { o.insp = { result: '불합격', note: note || '정품 여부 또는 상태 기준에 맞지 않습니다.', t: stamp() }; refundOrder(u, o, '검수 불합격', ST.REFUND); }
+  if (act === 'pack') pushHist(o, ST.PACK, '전용 박스 포장');
   if (act === 'ship') { const c = $(`.adm-courier[data-o="${id}"]`).value; o.track = { courier: c, no: String(Math.floor(1e11 + Math.random() * 9e11)) }; pushHist(o, ST.SHIP, `${c} ${o.track.no}`); }
   if (act === 'done') pushHist(o, ST.DONE);
   ensureLots(u); saveUsers(); saveInventory(); renderAdmin(); refreshViews();

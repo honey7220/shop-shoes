@@ -49,7 +49,7 @@ CREATE TABLE orders (
   order_id      VARCHAR(20) PRIMARY KEY,           -- 예: GS261123-4560
   member_id     INT NOT NULL REFERENCES members(member_id),
   ordered_at    DATETIME NOT NULL,
-  status        VARCHAR(10) NOT NULL,              -- 검수 대기/검수 중/검수 합격/배송중/배송 완료/취소 완료/환불 완료
+  status        VARCHAR(10) NOT NULL DEFAULT '검수 대기',  -- 주문의 현재 단계 (아래 CHECK 참고)
   subtotal      INT NOT NULL,
   coupon_disc   INT NOT NULL DEFAULT 0,
   point_used    INT NOT NULL DEFAULT 0,
@@ -65,7 +65,18 @@ CREATE TABLE orders (
   courier       VARCHAR(20),
   tracking_no   VARCHAR(30),
   refunded_at   DATETIME,
-  refund_reason VARCHAR(50)
+  refund_reason VARCHAR(50),
+  CONSTRAINT chk_order_status CHECK (status IN
+    ('검수 대기','검수 중','검수 합격','포장 중','배송중','배송 완료','취소 완료','환불 완료'))
+);
+
+-- 단계가 바뀔 때마다 한 줄씩 쌓는 이력 표 (orders.status 는 최신 단계만 가진다)
+CREATE TABLE order_status_log (
+  log_id     INT AUTO_INCREMENT PRIMARY KEY,
+  order_id   VARCHAR(20) NOT NULL REFERENCES orders(order_id),
+  status     VARCHAR(10) NOT NULL,
+  note       VARCHAR(200),
+  changed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE order_items (
@@ -127,3 +138,40 @@ WHERE status IN ('검수 대기','검수 중','검수 합격','배송중') ORDER
 SELECT p.product_id, p.model, p.colorway, ROUND(AVG(r.rating), 1) AS avg_rating, COUNT(*) AS reviews
 FROM reviews r JOIN inventory i ON i.sku = r.sku JOIN products p ON p.product_id = i.product_id
 GROUP BY p.product_id, p.model, p.colorway;
+
+-- ===== 주문 상태 흐름 (UPDATE) =====
+-- 주문 접수(결제 완료) 시 INSERT: status 는 기본값 '검수 대기'
+-- 단계가 바뀔 때 상태를 UPDATE 하고 이력도 함께 남긴다 (한 트랜잭션).
+-- 검수 대기 → 검수 중 → 검수 합격 → 포장 중 → 배송중 → 배송 완료
+START TRANSACTION;
+UPDATE orders SET status = '검수 중'  WHERE order_id = 'GS261123-4560' AND status = '검수 대기';
+INSERT INTO order_status_log (order_id, status) VALUES ('GS261123-4560', '검수 중');
+COMMIT;
+
+-- 검수 합격: 상태 등급과 메모도 같이 기록
+UPDATE orders SET status = '검수 합격', inspect_result = '합격', inspect_grade = 'A',
+       inspect_note = '정품 확인'
+WHERE order_id = 'GS261123-4560' AND status = '검수 중';
+
+UPDATE orders SET status = '포장 중' WHERE order_id = 'GS261123-4560' AND status = '검수 합격';
+
+-- 배송 시작: 택배사와 송장번호 기록
+UPDATE orders SET status = '배송중', courier = 'CJ대한통운', tracking_no = '123456789012'
+WHERE order_id = 'GS261123-4560' AND status = '포장 중';
+
+UPDATE orders SET status = '배송 완료' WHERE order_id = 'GS261123-4560' AND status = '배송중';
+
+-- 검수 불합격: 환불 처리 (재고 복원은 inventory UPDATE, 포인트 복원은 point_lots 로 따로 처리)
+UPDATE orders SET status = '환불 완료', inspect_result = '불합격', refunded_at = NOW(),
+       refund_reason = '검수 불합격'
+WHERE order_id = 'GS261123-4561' AND status = '검수 중';
+
+-- WHERE 의 status 조건은 "직전 단계일 때만 바꾼다"는 안전장치입니다.
+-- (이미 배송된 주문을 실수로 '검수 중'으로 되돌리는 일을 막음)
+
+-- 단계별 주문 수
+SELECT status, COUNT(*) AS cnt FROM orders GROUP BY status;
+
+-- 한 주문의 진행 이력
+SELECT status, changed_at, note FROM order_status_log
+WHERE order_id = 'GS261123-4560' ORDER BY changed_at;
