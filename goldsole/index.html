@@ -799,6 +799,17 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
 
 <div class="toast-wrap" id="toasts" aria-live="polite"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ---------- Supabase 연결 ----------
+   아래 두 값을 본인 프로젝트 값으로 바꾸세요 (Settings → API → Project URL / Publishable key).
+   공개(publishable/anon) 키만 넣습니다. service_role 키와 DB 비밀번호는 절대 넣지 마세요. */
+const SUPABASE_URL = 'https://내프로젝트.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_내공개키';
+const db = (window.supabase && !SUPABASE_URL.includes('내프로젝트'))
+  ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;   // 값을 채우기 전에는 null → 지금처럼 브라우저 저장 방식으로 동작
+</script>
 <script>
 /* =========================================================
    GOLDSOLE — 한정판 스니커 리셀 쇼핑몰 (프런트엔드 데모)
