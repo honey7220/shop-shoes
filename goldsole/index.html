@@ -805,7 +805,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
    아래 두 값을 본인 프로젝트 값으로 바꾸세요 (Settings → API → Project URL / Publishable key).
    공개(publishable/anon) 키만 넣습니다. service_role 키와 DB 비밀번호는 절대 넣지 마세요. */
 const SUPABASE_URL = 'https://bdgcczbizdaygosnizrc.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_내공개키';
+const SUPABASE_KEY = 'sb_publishable_etY-afZggso6DldRfVdk5w_q4NFm25h';
 const db = (window.supabase && !SUPABASE_KEY.includes('내공개키'))
   ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   : null;   // 값을 채우기 전에는 null → 지금처럼 브라우저 저장 방식으로 동작
@@ -991,7 +991,40 @@ const starStr = n => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n
 const ST = { WAIT:'검수 대기', INSP:'검수 중', PASS:'검수 합격', PACK:'포장 중', SHIP:'배송중', DONE:'배송 완료', CANCEL:'취소 완료', REFUND:'환불 완료' };
 const GRADE = { S:'새 상품 · 박스까지 완전한 상태', A:'새 상품 · 박스에 미세한 흠집', B:'새 상품 · 박스 눌림 등 경미한 보관 흔적' };
 const statCls = st => ({ '검수 중':'s-ing', '검수 합격':'s-pass', '포장 중':'s-ing', '배송중':'s-ship', '배송 완료':'s-pass', '취소 완료':'s-bad', '환불 완료':'s-bad' })[st] || '';
-function pushHist(o, st, note) { if (!o.hist) o.hist = [{ s: '주문 접수', t: o.d }]; o.hist.push({ s: st, t: stamp(), note }); o.status = st; }
+/* ---------- Supabase 동기화: 주문 INSERT / 상태 UPDATE (DB 연결 전에는 건너뜀) ---------- */
+let dbMsg = '';
+const dbErr = (what, e) => { dbMsg = `${what} 실패: ${e.message || e}`; console.warn('[supabase]', dbMsg); };
+async function dbInsertOrder(u, o) {
+  if (!db) return;
+  try {
+    let q = await db.from('orders').insert({ order_id: o.id, member_email: u.email, member_name: u.name, status: o.status, subtotal: o.sub,
+      coupon_disc: o.couponDisc || 0, point_used: o.use, shipping_fee: o.ship, paid: o.pay, point_earned: o.earn, pay_method: o.method, receiver: o.to.name, address: o.to.addr });
+    if (q.error) throw q.error;
+    q = await db.from('order_items').insert(o.items.map(i => ({ order_id: o.id, sku: `${i.id}-${i.size}`, price: i.price })));
+    if (q.error) throw q.error;
+    q = await db.from('order_status_log').insert({ order_id: o.id, status: o.status, note: '주문 접수' });
+    if (q.error) throw q.error;
+  } catch (e) { dbErr('주문 저장', e); }
+}
+async function dbUpdateStatus(o, note) {
+  if (!db) return;
+  try {
+    const row = { status: o.status };
+    if (o.insp) { row.inspect_result = o.insp.result; row.inspect_grade = o.insp.grade || null; row.inspect_note = o.insp.note || null; }
+    if (o.track) { row.courier = o.track.courier; row.tracking_no = o.track.no; }
+    if (o.refund) { row.refunded_at = new Date().toISOString(); row.refund_reason = o.refund.reason; }
+    let q = await db.from('orders').update(row).eq('order_id', o.id);          // UPDATE orders SET status = ... WHERE order_id = ...
+    if (q.error) throw q.error;
+    q = await db.from('order_status_log').insert({ order_id: o.id, status: o.status, note: note || null });
+    if (q.error) throw q.error;
+  } catch (e) { dbErr('상태 변경', e); }
+}
+async function dbOrderStats() {
+  if (!db) return null;
+  const q = await db.from('orders').select('status'); if (q.error) throw q.error;
+  const by = {}; q.data.forEach(x => by[x.status] = (by[x.status] || 0) + 1); return { total: q.data.length, by };
+}
+function pushHist(o, st, note) { if (!o.hist) o.hist = [{ s: '주문 접수', t: o.d }]; o.hist.push({ s: st, t: stamp(), note }); o.status = st; if (o._dbReady !== false) setTimeout(() => dbUpdateStatus(o, note), 0); }
 const allOrders = () => Object.values(users).flatMap(u => (u.orders || []).map(o => ({ u, o })));
 /* 취소·검수 불합격 환불: 재고 복원, 사용 포인트 복원, 적립 포인트 회수, 쿠폰 복원, 누적금액 차감 */
 function refundOrder(u, o, reason, status) {
@@ -1377,6 +1410,7 @@ $('#coForm').addEventListener('submit', async e => {
     items: cart.map(c => ({ id: c.id, size: c.size, price: sizePrice(byId(c.id), c.size) })), sub: k.sub, ship: k.ship, use: k.use, pay: k.pay, earn: k.earn, rate: k.rate, method: PAY_NAME[payMethod], tx: r.txId, status: ST.WAIT, couponId: cpId, couponDisc: k.couponDisc, hist: [{ s: '주문 접수', t: stamp() }],
     to: { name: f('cName').value.trim(), addr: `${f('cAddr').value.trim()} ${f('cAddr2').value.trim()}`.trim() } };
   u.orders.unshift(order);
+  dbInsertOrder(u, order);
   order.items.forEach(i => {   /* 재고 표 차감 + 입출고 기록 */
     const r = invRow(i.id, i.size); r.stock = Math.max(0, r.stock - 1);
     stockLog.unshift({ t: stamp(), sku: `${i.id}-${i.size}`, type: '판매', delta: -1, note: order.id });
@@ -1610,7 +1644,8 @@ function renderAdmin() {
   if (admTab === 'orders') {
     const list = allOrders().sort((a, b) => b.o.id.localeCompare(a.o.id)), open = list.filter(x => [ST.WAIT, ST.INSP, ST.PASS, ST.PACK, ST.SHIP].includes(x.o.status)).length;
     body = list.length ? `<table class="tbl"><thead><tr><th>주문번호</th><th>고객</th><th>상품</th><th>결제</th><th>상태</th><th>처리</th></tr></thead><tbody>${list.map(({ u, o }) => `<tr><td class="num">${o.id}<br><small style="color:var(--mute)">${o.d}</small></td><td>${esc(u.name)}<br><small style="color:var(--mute)">${esc(u.email)}</small></td><td>${o.items.map(i => `${esc(pname(byId(i.id)))} (${i.size})`).join('<br>')}</td><td class="num">${won(o.pay)}</td><td><span class="stat ${statCls(o.status)}">${o.status}</span></td><td>${admActions(o)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">아직 주문이 없습니다.<br>쇼핑몰에서 주문하면 여기에 나타납니다.</div>';
-    bar = `<span style="color:var(--mute);font-size:13px">주문 ${list.length}건 · 처리 필요 ${open}건</span><span style="color:var(--dim);font-size:12px">이 브라우저에 저장된 주문만 보입니다</span>`;
+    bar = `<span style="color:var(--mute);font-size:13px">주문 ${list.length}건 · 처리 필요 ${open}건</span><span id="dbStat" style="color:var(--dim);font-size:12px">이 브라우저에 저장된 주문만 보입니다</span>`;
+    setTimeout(async () => { const el = $('#dbStat'); if (!el || !db) return; el.textContent = 'DB 확인 중…'; try { const st = await dbOrderStats(); el.innerHTML = `<b style="color:var(--ok)">Supabase 연결됨</b> · DB 주문 ${st.total}건` + Object.entries(st.by).map(([k, v]) => ` · ${k} ${v}`).join(''); } catch (e) { el.innerHTML = `<b style="color:var(--red)">DB 오류</b> ${esc(e.message || String(e))} (supabase/setup.sql 을 실행했는지 확인)`; } }, 0);
   }
   if (admTab === 'log') {
     body = stockLog.length ? `<table class="tbl"><thead><tr><th>일시</th><th>SKU</th><th>구분</th><th>증감</th><th>비고</th></tr></thead><tbody>${stockLog.slice(0, 200).map(l => `<tr><td class="num">${l.t}</td><td class="num">${l.sku}</td><td>${l.type}</td><td class="num ${l.delta > 0 ? 'plus' : 'minus'}">${l.delta > 0 ? '+' : ''}${l.delta}</td><td>${esc(l.note || '')}</td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">아직 입출고 기록이 없습니다.<br>주문이 들어오거나 재고를 수정하면 여기에 쌓입니다.</div>';
