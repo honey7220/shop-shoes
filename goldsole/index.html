@@ -91,9 +91,9 @@ header.top{position:sticky;top:0;z-index:50;background:rgba(5,5,5,.86);backdrop-
 .hero{position:relative;height:min(84vh,740px);min-height:560px;overflow:hidden;background:#000;isolation:isolate}
 .slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity 1s ease,visibility 1s}
 .slide.on{opacity:1;visibility:visible}
-.slide>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center;transform:scale(1.07);transition:transform 7.5s cubic-bezier(.2,.6,.2,1)}
+.slide>img{position:absolute;top:0;right:0;width:70%;height:100%;object-fit:contain;object-position:center 58%;background:#fff;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 38%),linear-gradient(180deg,transparent 0,#000 22%,#000 78%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 38%),linear-gradient(180deg,transparent 0,#000 22%,#000 78%,transparent 100%);mask-composite:intersect;transform:scale(1.04);transition:transform 7.5s cubic-bezier(.2,.6,.2,1)}
 .slide.on>img{transform:scale(1)}
-.slide::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#000 0%,rgba(0,0,0,.9) 28%,rgba(0,0,0,.25) 62%,rgba(0,0,0,0) 80%),linear-gradient(0deg,#050505 0%,rgba(5,5,5,0) 30%)}
+.slide::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#000 0%,rgba(0,0,0,.85) 28%,rgba(0,0,0,.35) 48%,rgba(0,0,0,0) 62%),linear-gradient(0deg,#050505 0%,rgba(5,5,5,0) 30%)}
 .slide .copy{position:absolute;z-index:2;left:max(28px,calc((100vw - var(--wrap))/2 + 28px));top:50%;transform:translateY(-52%);max-width:560px}
 .slide .copy>*{opacity:0;transform:translateY(16px);transition:opacity .8s ease,transform .8s ease}
 .slide.on .copy>*{opacity:1;transform:none}
@@ -141,7 +141,7 @@ section.sec{padding:110px 0}
 .drop{background:radial-gradient(900px 400px at 85% 50%,rgba(201,162,75,.12),transparent 70%),var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .drop .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
 .drop-img{border:1px solid var(--line2);overflow:hidden;position:relative}
-.drop-img img{width:100%;aspect-ratio:12/7;object-fit:cover}
+.drop-img img{width:100%;aspect-ratio:12/7;object-fit:contain;background:#fff}
 .drop-img .stamp{position:absolute;top:16px;left:16px;background:#000;border:1px solid var(--gold);color:var(--gold2);padding:6px 12px;font-size:12px;font-weight:700}
 .drop h2{font-family:var(--serif);font-weight:900;font-size:clamp(28px,3.4vw,46px);line-height:1.25;margin-bottom:14px;word-break:keep-all}
 .drop p{color:var(--mute);margin-bottom:30px;word-break:keep-all}
@@ -164,8 +164,8 @@ select.field{appearance:none;padding-right:34px;background-image:url("data:image
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
 .card{background:var(--card);border:1px solid var(--line);position:relative;display:flex;flex-direction:column;transition:border-color .25s,transform .25s}
 .card:hover{border-color:var(--gold);transform:translateY(-3px)}
-.card .thumb{position:relative;aspect-ratio:4/3;overflow:hidden;background:#000;cursor:pointer}
-.card .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.card .thumb{position:relative;aspect-ratio:4/3;overflow:hidden;background:#fff;cursor:pointer}
+.card .thumb img{width:100%;height:100%;object-fit:contain;transition:transform .5s}
 .card:hover .thumb img{transform:scale(1.05)}
 .tags{position:absolute;top:12px;left:12px;display:flex;gap:6px}
 .tag-s{font-size:11px;font-weight:700;padding:4px 9px;background:#000;border:1px solid var(--gold);color:var(--gold2)}
@@ -261,8 +261,8 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
 
 /* product modal */
 .pd{display:grid;grid-template-columns:1.1fr 1fr}
-.pd-img{background:#000;position:relative}
-.pd-img img{width:100%;height:100%;object-fit:cover;min-height:380px}
+.pd-img{background:#fff;display:flex;align-items:center;position:relative}
+.pd-img img{width:100%;height:auto;object-fit:contain;min-height:0}
 .pd-body{padding:40px 36px;display:flex;flex-direction:column}
 .pd-body .brand{color:var(--gold);font-weight:700;font-size:13px;letter-spacing:.06em}
 .pd-body h2{font-family:var(--serif);font-size:26px;font-weight:900;line-height:1.3;margin:6px 0 4px;word-break:keep-all}
@@ -331,7 +331,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
 .pay.on{border-color:var(--gold2);background:rgba(201,162,75,.15);color:var(--gold2);font-weight:700}
 .note{font-size:12px;color:var(--dim);line-height:1.6;margin-top:10px}
 .co-item{display:flex;gap:12px;margin-bottom:14px;font-size:13.5px}
-.co-item img{width:70px;height:52px;object-fit:cover}
+.co-item img{width:70px;height:52px;object-fit:contain;background:#fff}
 .co-item div{flex:1;min-width:0}
 .pt-row{display:flex;gap:8px}
 .pt-row .field{flex:1}
@@ -369,7 +369,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
 .mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .mini{border:1px solid var(--line);cursor:pointer}
 .mini:hover{border-color:var(--gold)}
-.mini img{aspect-ratio:4/3;object-fit:cover;width:100%}
+.mini img{aspect-ratio:4/3;object-fit:contain;background:#fff;width:100%}
 .mini div{padding:10px 12px;font-size:13px}
 .empty-s{padding:50px 0;text-align:center;color:var(--mute)}
 
@@ -454,7 +454,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
   .calc{grid-template-columns:1fr}
   .foot{grid-template-columns:1fr 1fr}
   .hero{min-height:680px}
-  .slide>img{height:62%;object-position:62% center}
+  .slide>img{width:100%;height:46%;object-position:center center;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 20%,#000 75%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 20%,#000 75%,transparent 100%)}
   .slide::after{background:linear-gradient(0deg,#050505 0%,#050505 38%,rgba(5,5,5,0) 66%)}
   .slide .copy{top:auto;bottom:112px;transform:none;right:24px}
   .user-chip span.t{display:none}
@@ -522,7 +522,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
 <!-- ========== HERO ========== -->
 <section class="hero" id="hero" aria-roledescription="carousel" aria-label="주요 소개">
   <div class="slide on" data-i="0">
-    <img src="img/hero1.svg" alt="블랙과 골드 컬러의 한정판 하이탑 스니커">
+    <img src="img/hero1.png" alt="블랙과 골드 컬러의 한정판 하이탑 스니커">
     <div class="copy">
       <span class="tag">한정판 스니커 리셀</span>
       <h1>단 한 켤레의 가치,<br>검수로 증명합니다</h1>
@@ -531,7 +531,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
     </div>
   </div>
   <div class="slide" data-i="1">
-    <img src="img/hero2.svg" alt="크림슨 레드 컬러의 클래식 스니커" loading="lazy">
+    <img src="img/hero2.png" alt="크림슨 레드 컬러의 클래식 스니커" loading="lazy">
     <div class="copy">
       <span class="tag">놓친 드랍</span>
       <h2>품절된 그 모델,<br>사이즈별로 바로 구매</h2>
@@ -540,7 +540,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
     </div>
   </div>
   <div class="slide" data-i="2">
-    <img src="img/hero3.svg" alt="화이트와 골드 컬러의 로우탑 스니커" loading="lazy">
+    <img src="img/hero3.png" alt="화이트와 골드 컬러의 로우탑 스니커" loading="lazy">
     <div class="copy">
       <span class="tag">멤버십 포인트</span>
       <h2>구매할수록<br>적립률이 올라갑니다</h2>
@@ -549,7 +549,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
     </div>
   </div>
   <div class="slide" data-i="3">
-    <img src="img/hero4.svg" alt="코발트 블루 컬러의 퍼포먼스 스니커" loading="lazy">
+    <img src="img/hero4.png" alt="코발트 블루 컬러의 퍼포먼스 스니커" loading="lazy">
     <div class="copy">
       <span class="tag">정품 보증</span>
       <h2>검수 통과 상품만<br>문 앞에 도착합니다</h2>
@@ -600,7 +600,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
 <!-- ========== DROP ========== -->
 <section class="sec drop" id="drop">
   <div class="wrap">
-    <div class="drop-img"><img src="img/drop.svg" alt="미드나잇 크라운 하이탑 스니커" loading="lazy"><span class="stamp">입고 예정</span></div>
+    <div class="drop-img"><img src="img/drop.png" alt="미드나잇 크라운 하이탑 스니커" loading="lazy"><span class="stamp">입고 예정</span></div>
     <div>
       <div class="gold-rule"></div>
       <h2>AERO Hi-1 ‘미드나잇 크라운’<br>다음 입고까지</h2>
@@ -1138,7 +1138,7 @@ function renderGrid() {
     const so = soldOut(p), ts = totalStock(p), w = u && u.wish.includes(p.id), up = p.change >= 0;
     return `<article class="card">
       <div class="thumb" data-view="${p.id}" tabindex="0" role="button" aria-label="${esc(pname(p))} 상세 보기">
-        <img src="img/${p.id}.svg" alt="${esc(pname(p))}" loading="lazy">
+        <img src="img/${p.id}.png" alt="${esc(pname(p))}" loading="lazy">
         <div class="tags"><span class="tag-s">한정 ${p.qty.toLocaleString()}켤레</span>${so?'<span class="tag-s out">품절</span>':ts<=5?`<span class="tag-s hot">잔여 ${ts}켤레</span>`:p.change>8?'<span class="tag-s hot">급상승</span>':''}</div>
       </div>
       <button class="wish${w?' on':''}" data-wish="${p.id}" aria-label="찜하기" aria-pressed="${!!w}">${heart}</button>
@@ -1193,7 +1193,7 @@ function renderProduct() {
        <table class="spec"><tr><th>브랜드</th><td>${p.brand}</td></tr><tr><th>모델 · 컬러</th><td>${esc(p.name)} · ${esc(p.cw)}</td></tr><tr><th>소재</th><td>${esc(inf.mat || '-')}</td></tr><tr><th>밑창</th><td>${esc(inf.sole || '-')}</td></tr><tr><th>발매</th><td>${p.year}년 · 발매가 ${won(p.retail)} · 한정 ${p.qty.toLocaleString()}켤레</td></tr><tr><th>스타일 코드</th><td class="num">${inf.code}</td></tr><tr><th>검수 기준</th><td>소재·봉제·라벨·박스 정보를 대조한 뒤 상태 등급(S/A/B)을 부여합니다.</td></tr></table>`
     : pdTab === 'trade' ? tradeTab(p) : reviewTab(p);
   $('#pdBody').innerHTML = `
-    <div class="pd-img"><img src="img/${p.id}.svg" alt="${esc(pname(p))}"></div>
+    <div class="pd-img"><img src="img/${p.id}.png" alt="${esc(pname(p))}"></div>
     <div class="pd-body">
       <span class="brand">${p.brand}</span>
       <h2>${esc(p.name)} ‘${esc(p.cw)}’</h2>
@@ -1260,7 +1260,7 @@ function renderCart() {
   $('#cartCount').textContent = cart.length || ''; $('#cartCount').dataset.n = cart.length;
   const list = $('#cartList'), foot = $('#cartFoot');
   if (!cart.length) { list.innerHTML = '<div class="empty-s"><b style="display:block;color:var(--ink);font-size:17px;margin-bottom:6px">장바구니가 비어 있습니다</b>마음에 드는 한정판을 담아보세요.</div>'; foot.innerHTML = '<a class="btn btn-gold btn-block" href="#shop" id="goShop">상품 보러 가기</a>'; return; }
-  list.innerHTML = cart.map((c, i) => { const p = byId(c.id); return `<div class="cart-item"><img src="img/${p.id}.svg" alt=""><div><h4>${esc(pname(p))}</h4><small>사이즈 ${c.size}mm${sizeStock(c.id, c.size) < 1 ? ' · <b style="color:var(--red)">품절</b>' : ''}</small><div class="p num">${won(sizePrice(p, c.size))}</div></div><button class="rm" data-rm="${i}" aria-label="삭제"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`; }).join('');
+  list.innerHTML = cart.map((c, i) => { const p = byId(c.id); return `<div class="cart-item"><img src="img/${p.id}.png" alt=""><div><h4>${esc(pname(p))}</h4><small>사이즈 ${c.size}mm${sizeStock(c.id, c.size) < 1 ? ' · <b style="color:var(--red)">품절</b>' : ''}</small><div class="p num">${won(sizePrice(p, c.size))}</div></div><button class="rm" data-rm="${i}" aria-label="삭제"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`; }).join('');
   const k = calc();
   foot.innerHTML = `<div class="sum-row"><span>상품 금액</span><span class="num">${won(k.sub)}</span></div>
     <div class="sum-row"><span>배송비</span><span class="num">${k.ship ? won(k.ship) : '무료'}</span></div>
@@ -1287,7 +1287,7 @@ function startCheckout() {
   const u = me(); closeM('m-cart');
   $('#cName').value = $('#cName').value || u.name; $('#cPhone').value = $('#cPhone').value || u.phone;
   $('#usePt').value = ''; $('#cAgree').checked = false; $('#coMsg').hidden = true; fillCoupons();
-  $('#coItems').innerHTML = cart.map(c => { const p = byId(c.id); return `<div class="co-item"><img src="img/${p.id}.svg" alt=""><div>${esc(pname(p))}<br><span style="color:var(--mute)">${c.size}mm</span></div><b class="num">${won(sizePrice(p, c.size))}</b></div>`; }).join('');
+  $('#coItems').innerHTML = cart.map(c => { const p = byId(c.id); return `<div class="co-item"><img src="img/${p.id}.png" alt=""><div>${esc(pname(p))}<br><span style="color:var(--mute)">${c.size}mm</span></div><b class="num">${won(sizePrice(p, c.size))}</b></div>`; }).join('');
   updateCo(); openM('m-checkout');
 }
 function useVal() { return parseInt(($('#usePt').value || '0').replace(/\D/g, ''), 10) || 0; }
@@ -1398,7 +1398,7 @@ function renderMy() {
   if (myTab === 'points') body = `<p class="note" style="margin:6px 0 14px">${soon ? `<b style="color:var(--gold2)">30일 안에 ${pts(soon)}</b>가 소멸돼요. ` : ''}포인트 유효기간은 구매 적립 ${POINT_EXP_DAYS / 365}년, 가입 포인트 ${SIGNUP_EXP_DAYS / 30}개월이에요. 오래된 포인트부터 먼저 사용돼요.</p>` + (u.history.length ? `<table class="tbl"><thead><tr><th>일자</th><th>구분</th><th>내용</th><th>유효기간</th><th>포인트</th></tr></thead><tbody>${u.history.map(h => `<tr><td class="num">${h.d}</td><td>${h.type}</td><td>${esc(h.desc)}</td><td class="num">${h.exp ? '~' + h.exp : '—'}</td><td class="num ${h.amt>0?'plus':'minus'}">${h.amt>0?'+':''}${h.amt.toLocaleString()}P</td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">포인트 내역이 없습니다.</div>');
   if (myTab === 'orders') body = u.orders.length ? `<table class="tbl"><thead><tr><th>주문</th><th>상품</th><th>상태</th><th>결제</th><th></th></tr></thead><tbody>${u.orders.map(o => `<tr><td class="num">${o.id}<br><small style="color:var(--mute)">${o.d}</small></td><td>${o.items.map(i => `${esc(pname(byId(i.id)))} (${i.size})`).join('<br>')}</td><td><span class="stat ${statCls(o.status)}">${o.status}</span></td><td class="num">${won(o.pay)}<br><small class="earn">${[ST.CANCEL, ST.REFUND].includes(o.status) ? '환불' : '+' + pts(o.earn)}</small></td><td><button class="btn btn-ghost btn-sm" data-order="${o.id}">상세</button></td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">아직 주문 내역이 없습니다.<br>첫 구매 시 ' + TIERS[0].rate + '% 포인트가 적립됩니다.</div>';
   if (myTab === 'coupons') body = (u.coupons || []).length ? [...u.coupons].reverse().map(c => { const off = c.used || c.exp < nowIso(); return `<div class="cp${off ? ' off' : ''}"><div><b>${won(c.value)} 할인</b><small>${esc(c.name)} · ${won(c.min)} 이상 주문 시</small></div><div style="text-align:right;font-size:13px">${c.used ? '사용 완료' : c.exp < nowIso() ? '기간 만료' : '~' + c.exp + '까지'}</div></div>`; }).join('') : '<div class="empty-s">보유한 쿠폰이 없습니다.</div>';
-  if (myTab === 'wish') body = u.wish.length ? `<div class="mini-grid">${u.wish.map(id => { const p = byId(id); return `<div class="mini" data-mv="${id}"><img src="img/${id}.svg" alt=""><div>${esc(pname(p))}<br><b class="num">${won(p.price)}</b></div></div>`; }).join('')}</div>` : '<div class="empty-s">찜한 상품이 없습니다.</div>';
+  if (myTab === 'wish') body = u.wish.length ? `<div class="mini-grid">${u.wish.map(id => { const p = byId(id); return `<div class="mini" data-mv="${id}"><img src="img/${id}.png" alt=""><div>${esc(pname(p))}<br><b class="num">${won(p.price)}</b></div></div>`; }).join('')}</div>` : '<div class="empty-s">찜한 상품이 없습니다.</div>';
   $('#myBody').innerHTML = `<div class="my-head">
       <div class="my-top"><div><span class="tier-pill">${medalDot(t)} ${t.name}</span><h3>${esc(u.name)}님의 멤버십</h3></div><button class="btn btn-ghost btn-sm" id="logoutBtn">로그아웃</button></div>
       <div class="my-stats"><div><small>보유 포인트</small><b class="num earn">${pts(u.points)}</b></div><div><small>현재 적립률 · 쿠폰</small><b>${t.rate}% · ${cps.length}장</b></div><div><small>누적 구매금액</small><b class="num">${won(u.spent)}</b></div></div>
@@ -1432,7 +1432,7 @@ function orderHtml(o) {
     const hh = o.hist || [], st = hh.find(x => x.s === ST.SHIP), dn = hh.find(x => x.s === ST.DONE);
     h += `<div class="box"><h4>배송 조회</h4><dl class="od-grid"><dt>택배사</dt><dd>${o.track.courier}</dd><dt>송장번호</dt><dd class="num">${o.track.no}</dd></dl><ul class="tl" style="margin-top:14px"><li class="on">집화 · 상품 인수<small>${st ? st.t : ''}</small></li><li class="${dn ? 'on' : ''}">${dn ? '배송 완료' : '배송 중'}<small>${dn ? dn.t : '곧 도착해요'}</small></li></ul></div>`;
   }
-  h += `<div class="box"><h4>주문 상품</h4>${o.items.map(i => { const p = byId(i.id), key = `${i.id}-${i.size}`, done = (o.reviewed || {})[key]; return `<div class="co-item" style="align-items:center"><img src="img/${p.id}.svg" alt=""><div>${esc(pname(p))}<br><span style="color:var(--mute)">${i.size}mm · ${won(i.price)}</span></div>${o.status === ST.DONE ? (done ? '<span class="stat s-pass">리뷰 작성 완료</span>' : `<button class="btn btn-ghost btn-sm" data-rv="${o.id}|${key}">리뷰 +${REVIEW_REWARD}P</button>`) : ''}</div>`; }).join('')}</div>`;
+  h += `<div class="box"><h4>주문 상품</h4>${o.items.map(i => { const p = byId(i.id), key = `${i.id}-${i.size}`, done = (o.reviewed || {})[key]; return `<div class="co-item" style="align-items:center"><img src="img/${p.id}.png" alt=""><div>${esc(pname(p))}<br><span style="color:var(--mute)">${i.size}mm · ${won(i.price)}</span></div>${o.status === ST.DONE ? (done ? '<span class="stat s-pass">리뷰 작성 완료</span>' : `<button class="btn btn-ghost btn-sm" data-rv="${o.id}|${key}">리뷰 +${REVIEW_REWARD}P</button>`) : ''}</div>`; }).join('')}</div>`;
   h += `<div class="box"><h4>결제 정보</h4><dl class="od-grid"><dt>결제수단</dt><dd>${o.method}</dd><dt>상품 금액</dt><dd class="num">${won(o.sub)}</dd>${cd ? `<dt>쿠폰 할인</dt><dd class="num">-${won(cd)}</dd>` : ''}${o.use ? `<dt>포인트 사용</dt><dd class="num">-${won(o.use)}</dd>` : ''}<dt>배송비</dt><dd class="num">${o.ship ? won(o.ship) : '무료'}</dd><dt>결제 금액</dt><dd class="num"><b>${won(o.pay)}</b></dd><dt>적립 포인트</dt><dd class="num">${fin ? '회수됨' : '+' + pts(o.earn)}</dd></dl></div>`;
   if (o.refund) h += `<div class="box bad"><h4>${o.status} · ${esc(o.refund.reason)}</h4><dl class="od-grid"><dt>환불 금액</dt><dd class="num">${won(o.refund.amt)}</dd><dt>사용 포인트 복원</dt><dd class="num">${o.refund.back ? '+' + pts(o.refund.back) : '—'}</dd><dt>적립 포인트 회수</dt><dd class="num">${o.refund.revoked ? '-' + pts(o.refund.revoked) : '—'}</dd><dt>처리 일시</dt><dd class="num">${o.refund.t}</dd></dl><p style="color:var(--mute);margin-top:8px">결제수단 환불은 카드사·결제사에 따라 영업일 기준 3~5일이 걸릴 수 있어요.</p></div>`;
   h += `<div class="box"><h4>배송지</h4><p>${esc(o.to.name)}<br>${esc(o.to.addr)}</p></div>`;
