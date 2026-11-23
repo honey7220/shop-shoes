@@ -6,6 +6,22 @@
 <title>GOLDSOLE · 한정판 스니커 리셀</title>
 <meta name="description" content="정품 검수를 통과한 한정판 스니커만 거래하는 리셀 쇼핑몰. 구매할수록 커지는 등급별 포인트 적립.">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#000000">
+<link rel="canonical" href="https://honey7220.github.io/shop-shoes/goldsole/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="GOLDSOLE">
+<meta property="og:title" content="GOLDSOLE · 한정판 스니커 리셀">
+<meta property="og:description" content="검수 통과 상품만 배송하는 한정판 스니커 리셀. 구매할수록 커지는 등급별 포인트, 최대 12% 적립.">
+<meta property="og:url" content="https://honey7220.github.io/shop-shoes/goldsole/">
+<meta property="og:image" content="https://honey7220.github.io/shop-shoes/goldsole/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GOLDSOLE 한정판 스니커 리셀">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GOLDSOLE · 한정판 스니커 리셀">
+<meta name="twitter:description" content="검수 통과 상품만 배송하는 한정판 스니커 리셀. 최대 12% 포인트 적립.">
+<meta name="twitter:image" content="https://honey7220.github.io/shop-shoes/goldsole/img/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
@@ -362,6 +378,58 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
 .toast{background:#000;border:1px solid var(--gold);color:var(--ink);padding:13px 22px;font-size:14px;box-shadow:0 12px 40px rgba(0,0,0,.7);animation:pop .25s ease}
 .toast b{color:var(--gold2)}
 
+/* ========== Detail tabs / orders / policy ========== */
+.linkbtn.u{text-decoration:underline;color:var(--gold2);font-size:inherit}
+.pd-more{grid-column:1/-1;border-top:1px solid var(--line2);padding:26px 36px 36px}
+.pd-desc{color:#cfc7b2;line-height:1.85;margin-bottom:22px;word-break:keep-all;max-width:70ch}
+.spec{width:100%;border-collapse:collapse;font-size:14px}
+.spec th{width:130px;color:var(--mute);font-weight:500;text-align:left;padding:11px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.spec td{padding:11px 0;border-bottom:1px solid var(--line)}
+.tbl.c th,.tbl.c td{text-align:center}
+.stars{color:var(--gold2);letter-spacing:2px}
+.rating{display:inline-flex;gap:6px;align-items:center;color:var(--mute);font-size:13px;margin-bottom:10px}
+.star-pick{display:flex;gap:2px;margin-bottom:18px}
+.star-pick button{font-size:34px;line-height:1;color:var(--line2);padding:0 3px}
+.star-pick button.on{color:var(--gold2)}
+.rv{padding:16px 0;border-bottom:1px solid var(--line)}
+.rv .h{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.rv small{color:var(--mute)}
+.rv p{color:#cfc7b2;word-break:keep-all}
+.stat{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border:1px solid var(--line2);color:var(--mute);white-space:nowrap}
+.stat.s-ing{color:var(--gold2);border-color:var(--gold)}
+.stat.s-pass{color:var(--ok);border-color:var(--ok)}
+.stat.s-ship{color:#8ec5ff;border-color:#8ec5ff}
+.stat.s-bad{color:var(--red);border-color:var(--red)}
+.tl{list-style:none;margin:8px 0 6px}
+.tl li{position:relative;padding:0 0 18px 28px;color:var(--dim);font-size:14px}
+.tl li::before{content:"";position:absolute;left:3px;top:6px;width:11px;height:11px;border-radius:50%;border:2px solid var(--line2);background:var(--bg2)}
+.tl li::after{content:"";position:absolute;left:8px;top:20px;bottom:-4px;width:1px;background:var(--line2)}
+.tl li:last-child{padding-bottom:4px}
+.tl li:last-child::after{display:none}
+.tl li.on{color:var(--ink)}
+.tl li.on::before{border-color:var(--gold2);background:var(--gold)}
+.tl li.bad::before{border-color:var(--red);background:var(--red)}
+.tl li small{display:block;color:var(--mute);font-size:12px}
+.box{border:1px solid var(--line2);padding:16px 18px;margin:14px 0;background:var(--card);font-size:14px}
+.box h4{font-size:14px;margin-bottom:8px}
+.box p{color:#cfc7b2}
+.box.ok{border-color:var(--ok)}
+.box.bad{border-color:var(--red)}
+.od-grid{display:grid;grid-template-columns:auto 1fr;gap:6px 20px;font-size:14px}
+.od-grid dt{color:var(--mute)}
+.od-grid dd{text-align:right}
+.cp{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border:1px dashed var(--gold);margin-bottom:10px;background:rgba(201,162,75,.06)}
+.cp.off{opacity:.45;border-color:var(--line2)}
+.cp b{font-size:17px}
+.cp small{display:block;color:var(--mute);font-size:12px}
+.policy h3{font-size:16px;margin:24px 0 8px}
+.policy p,.policy li{font-size:13.5px;color:#cfc7b2;line-height:1.85;word-break:keep-all}
+.policy ul{list-style:disc;padding-left:20px;margin-bottom:6px}
+.legal-links{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:14px}
+.legal-links button{color:var(--mute);font-size:13px}
+.legal-links button:hover{color:var(--gold2)}
+.legal-links .b{color:var(--ink);font-weight:700}
+@media (max-width:640px){.pd-more{padding:22px 20px 28px}}
 /* ========== Responsive ========== */
 @media (max-width:1100px){
   .grid{grid-template-columns:repeat(3,1fr)}
@@ -582,12 +650,12 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
   <div class="wrap">
     <div class="foot">
       <div><img src="img/logo.svg" alt="GOLDSOLE"><p>한정판 스니커 리셀 플랫폼.<br>모든 상품은 검수 후 배송됩니다.</p></div>
-      <div><h4>고객 안내</h4><ul><li><a href="#process">검수 기준</a></li><li><a href="#member">멤버십·포인트</a></li><li><a href="#shop">전체 상품</a></li><li><button type="button" class="linkbtn" id="adminOpen">재고 관리 (관리자)</button></li></ul></div>
-      <div><h4>고객센터</h4><ul><li>전화: 000-0000-0000</li><li>이메일: help@example.com</li><li>평일 10:00–18:00 (점심 12:30–13:30)</li></ul></div>
+      <div><h4>고객 안내</h4><ul><li><a href="#process">검수 기준</a></li><li><a href="#member">멤버십·포인트</a></li><li><a href="#shop">전체 상품</a></li><li><button type="button" class="linkbtn" data-policy="refund">청약철회·환불 안내</button></li></ul></div>
+      <div><h4>고객센터</h4><ul id="footContact"></ul></div>
     </div>
     <div class="legal">
-      상호: (입력 필요) · 대표: (입력 필요) · 사업자등록번호: 000-00-00000 · 통신판매업신고: 제0000-서울○○-0000호<br>
-      주소: (입력 필요) · 개인정보보호책임자: (입력 필요)<br>
+      <div class="legal-links"><button type="button" data-policy="terms">이용약관</button><button type="button" class="b" data-policy="privacy">개인정보처리방침</button><button type="button" data-policy="refund">청약철회·환불 안내</button><button type="button" id="adminOpen">관리자</button></div>
+      <div id="legalInfo"></div>
       본 쇼핑몰의 상품은 리셀(재판매) 상품이며, 상품 이미지는 예시 일러스트입니다. 검수 불합격 시 전액 환불됩니다.<br>
       © GOLDSOLE. All rights reserved.
     </div>
@@ -613,7 +681,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
       </form>
 
       <form id="signForm" novalidate hidden>
-        <div class="bonus"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.500 10c0-1.300 1.100-2 2.500-2s2.500.7 2.500 2-1.100 1.600-2.500 1.900-2.500.8-2.500 2.100 1.100 2 2.500 2 2.500-.7 2.500-2"/></svg>가입 즉시 <b>3,000P</b>가 적립됩니다.</div>
+        <div class="bonus"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.500 10c0-1.300 1.100-2 2.500-2s2.500.7 2.500 2-1.100 1.600-2.500 1.900-2.500.8-2.500 2.100 1.100 2 2.500 2 2.500-.7 2.500-2"/></svg>가입 즉시 <b>3,000P</b>와 <b>10,000원 할인쿠폰</b>이 지급됩니다.</div>
         <div class="form-msg" id="signMsg" hidden></div>
         <div class="f"><label for="sName">이름</label><input class="field" id="sName" autocomplete="name" required><div class="err"></div></div>
         <div class="f"><label for="sEmail">이메일</label><input class="field" id="sEmail" type="email" autocomplete="username" placeholder="name@example.com" required><div class="err"></div></div>
@@ -622,7 +690,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
           <div class="f"><label for="sPw2">비밀번호 확인</label><input class="field" id="sPw2" type="password" autocomplete="new-password" required><div class="err"></div></div>
         </div>
         <div class="f"><label for="sPhone">휴대폰 번호</label><input class="field" id="sPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="010-0000-0000" required><div class="err"></div></div>
-        <label class="check"><input type="checkbox" id="sAgree"><span>[필수] 이용약관 및 개인정보 수집·이용에 동의합니다.</span></label>
+        <label class="check"><input type="checkbox" id="sAgree"><span>[필수] <button type="button" class="linkbtn u" data-policy="terms">이용약관</button> 및 <button type="button" class="linkbtn u" data-policy="privacy">개인정보 수집·이용</button>에 동의합니다.</span></label>
         <label class="check"><input type="checkbox" id="sMkt"><span>[선택] 드랍 소식과 혜택 알림을 받습니다.</span></label>
         <div class="err" id="agreeErr" style="color:var(--red);font-size:12px;margin-bottom:12px"></div>
         <button class="btn btn-gold btn-block" type="submit">가입하고 3,000P 받기</button>
@@ -687,11 +755,13 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
       <aside class="co-side">
         <h3>주문 상품</h3>
         <div id="coItems"></div>
+        <h3 style="margin-top:22px">쿠폰</h3>
+        <select class="field" id="cCoupon" aria-label="쿠폰 선택" style="width:100%"></select>
         <h3 style="margin-top:22px">포인트 사용</h3>
         <div class="pt-row"><input class="field num" id="usePt" inputmode="numeric" placeholder="0" aria-label="사용할 포인트"><button type="button" class="btn btn-ghost btn-sm" id="useAll">전액 사용</button></div>
         <p class="note" id="ptNote"></p>
         <div id="coSum" style="margin-top:22px"></div>
-        <label class="check" style="margin-top:6px"><input type="checkbox" id="cAgree"><span>주문 내용과 리셀 상품 특성(검수 후 배송, 단순 변심 환불 제한)에 동의합니다.</span></label>
+        <label class="check" style="margin-top:6px"><input type="checkbox" id="cAgree"><span>주문 내용, 검수 후 배송 절차와 <button type="button" class="linkbtn u" data-policy="refund">청약철회·환불 안내</button>에 동의합니다.</span></label>
         <button class="btn btn-gold btn-block" type="submit" id="payBtn">결제하기</button>
       </aside>
     </form>
@@ -718,6 +788,12 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
     <div class="m-pad" id="admBody"></div>
   </div>
 </div>
+
+<!-- size guide / order detail / review / policy -->
+<div class="ov" id="m-size" role="dialog" aria-modal="true" aria-label="사이즈 가이드"><div class="modal mid"><button class="m-close" data-close aria-label="닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="m-pad policy" id="sizeBody"></div></div></div>
+<div class="ov" id="m-order" role="dialog" aria-modal="true" aria-label="주문 상세"><div class="modal mid"><button class="m-close" data-close aria-label="닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="m-pad" id="orderBody"></div></div></div>
+<div class="ov" id="m-review" role="dialog" aria-modal="true" aria-label="리뷰 작성"><div class="modal"><button class="m-close" data-close aria-label="닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="m-pad" id="reviewBody"></div></div></div>
+<div class="ov" id="m-policy" role="dialog" aria-modal="true" aria-label="약관 및 정책"><div class="modal mid"><button class="m-close" data-close aria-label="닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="m-pad policy" id="policyBody"></div></div></div>
 
 <div class="toast-wrap" id="toasts" aria-live="polite"></div>
 
@@ -750,6 +826,13 @@ const MIN_USE_POINT = 1000;
 const tierOf = spent => [...TIERS].reverse().find(t => spent >= t.min);
 const nextTier = t => TIERS[TIERS.indexOf(t) + 1];
 
+/* ---------- 사업자·정책 정보 (여기만 고치면 푸터와 약관 문구에 반영됩니다) ---------- */
+const SITE = { name:'GOLDSOLE', company:'(입력 필요)', ceo:'(입력 필요)', biz:'000-00-00000', mailOrder:'제0000-서울○○-0000호',
+  addr:'(입력 필요)', tel:'000-0000-0000', email:'help@example.com', hours:'평일 10:00–18:00 (점심 12:30–13:30)',
+  privacyOfficer:'(입력 필요)', effective:'2026년 11월 23일' };
+const POINT_EXP_DAYS = 365, SIGNUP_EXP_DAYS = 90, REVIEW_REWARD = 500;
+const WELCOME_COUPON = { name:'신규 가입 10,000원 할인', value:10000, min:300000, days:30 };
+
 /* ---------- 상품 데이터 (예시 · 가상 브랜드) ---------- */
 const SIZES = [230,235,240,245,250,255,260,265,270,275,280,285,290];
 const SIZE_OFF = {230:-.05,235:-.04,240:-.03,245:-.02,250:-.01,255:-.005,260:0,265:.01,270:.02,275:.03,280:.04,285:.055,290:.07};
@@ -777,6 +860,23 @@ PRODUCTS.forEach((p, i) => {
 });
 const byId = id => PRODUCTS.find(p => p.id === id);
 const pname = p => `${p.brand} ${p.name} ‘${p.cw}’`;
+/* 상품 상세 설명 (상품 표의 부가 정보) */
+const INFO = {
+  p01:{mat:'프리미엄 가죽 · 골드 메탈릭 패널', sole:'쿠션 미드솔 · 고무 아웃솔', story:'블랙 바탕에 골드 포인트를 더한 시그니처 컬러입니다. 발매 직후 품절된 대표 모델입니다.'},
+  p02:{mat:'가죽 · 레드 오버레이', sole:'쿠션 미드솔 · 고무 아웃솔', story:'화이트와 레드의 대비가 강한 코트 스타일입니다. 클래식한 실루엣으로 꾸준히 거래됩니다.'},
+  p03:{mat:'니트 · 합성 가죽', sole:'경량 미드솔 · 그립 아웃솔', story:'선명한 코발트 컬러에 옐로 포인트를 더한 퍼포먼스 스타일입니다.'},
+  p04:{mat:'스웨이드 · 가죽', sole:'고무 아웃솔', story:'짙은 그린과 골드 디테일이 어우러진 시즌 한정 컬러입니다.'},
+  p05:{mat:'스웨이드 · 메쉬', sole:'크림 미드솔 · 고무 아웃솔', story:'모래빛 톤으로 어떤 코디에도 무난하게 어울리는 데일리 모델입니다.'},
+  p06:{mat:'니트 · 합성 가죽', sole:'경량 미드솔 · 그립 아웃솔', story:'깊은 퍼플에 골드 포인트를 더한 컬러로 수집가들이 찾는 모델입니다.'},
+  p07:{mat:'가죽 · 골드 디테일', sole:'쿠션 미드솔 · 고무 아웃솔', story:'화이트 베이스에 골드 포인트를 더한 로우탑 모델로 깔끔한 룩에 어울립니다.'},
+  p08:{mat:'합성 가죽 · 메쉬', sole:'경량 미드솔 · 그립 아웃솔', story:'선명한 오렌지 컬러가 눈에 띄는 한정 모델입니다.'},
+  p09:{mat:'스웨이드 · 가죽', sole:'고무 아웃솔', story:'차분한 그레이 톤에 레드 포인트를 더한 컬러웨이입니다.'},
+  p10:{mat:'가죽 · 골드 디테일', sole:'쿠션 미드솔 · 고무 아웃솔', story:'은은한 핑크에 골드 포인트를 더한 시즌 컬러입니다.'},
+  p11:{mat:'프리미엄 가죽 · 골드 메탈릭 패널', sole:'쿠션 미드솔 · 고무 아웃솔', story:'네이비 바탕에 골드 패널을 얹은 최소 수량 모델입니다.'},
+  p12:{mat:'합성 가죽 · 메탈릭 패널', sole:'경량 미드솔 · 그립 아웃솔', story:'크롬 느낌의 실버 컬러로 미래적인 분위기를 냅니다.'},
+};
+const infoOf = p => ({ ...(INFO[p.id] || {}), code: 'GS-' + p.id.toUpperCase() });
+const SIZE_MAP = {230:['5','4','37.5'],235:['5.5','4.5','38'],240:['6','5','38.5'],245:['6.5','5.5','39'],250:['7','6','40'],255:['7.5','6.5','40.5'],260:['8','7','41'],265:['8.5','7.5','42'],270:['9','8','42.5'],275:['9.5','8.5','43'],280:['10','9','44'],285:['10.5','9.5','44.5'],290:['11','10','45']};
 
 /* ---------- 저장소 ---------- */
 const LS = {
@@ -811,6 +911,87 @@ const sizeStock = (pid, size) => (invRow(pid, size) || {}).stock || 0;
 const totalStock = p => inventory.filter(r => r.pid === p.id).reduce((a, r) => a + r.stock, 0);
 const sizePrice = (p, s) => (invRow(p.id, s) || {}).price || p.price;
 const soldOut = p => totalStock(p) === 0;
+const iso = d => { const x = new Date(d), z = n => String(n).padStart(2, '0'); return `${x.getFullYear()}-${z(x.getMonth() + 1)}-${z(x.getDate())}`; };
+const addDays = n => iso(Date.now() + n * 86400000);
+const nowIso = () => iso(Date.now());
+
+/* ---------- 포인트 유효기간: 적립 건(lot)마다 만료일을 두고, 오래된 순으로 사용 ---------- */
+function ensureLots(u) {
+  if (!Array.isArray(u.lots)) u.lots = u.points > 0 ? [{ id: 'L0', amt: u.points, left: u.points, exp: addDays(POINT_EXP_DAYS), src: '기존 포인트' }] : [];
+  if (!Array.isArray(u.coupons)) u.coupons = [];
+}
+const sumLots = u => { u.points = u.lots.reduce((a, l) => a + l.left, 0); };
+function addLot(u, amt, days, src) {
+  const l = { id: 'L' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), amt, left: amt, exp: addDays(days), src };
+  u.lots.push(l); sumLots(u); return l;
+}
+function expireLots(u) {
+  const t = nowIso(); let lost = 0;
+  u.lots.forEach(l => { if (l.left > 0 && l.exp < t) { lost += l.left; l.left = 0; } });
+  if (lost) u.history.unshift({ d: today(), type: '소멸', amt: -lost, desc: '유효기간 만료' });
+  sumLots(u); return lost;
+}
+function spendPoints(u, amt) {
+  const used = []; let need = amt;
+  [...u.lots].filter(l => l.left > 0).sort((a, b) => a.exp.localeCompare(b.exp)).forEach(l => {
+    if (need <= 0) return; const t = Math.min(l.left, need); l.left -= t; need -= t; used.push({ id: l.id, amt: t });
+  });
+  sumLots(u); return used;
+}
+function returnPoints(u, used) {
+  used.forEach(x => { const l = u.lots.find(y => y.id === x.id); if (l && l.exp >= nowIso()) l.left += x.amt; else addLot(u, x.amt, 30, '환불 복원'); });
+  sumLots(u);
+}
+function revokePoints(u, amt, lotId) {
+  let need = amt, got = 0; const take = l => { const t = Math.min(l.left, need); l.left -= t; need -= t; got += t; };
+  const own = u.lots.find(l => l.id === lotId); if (own) take(own);
+  [...u.lots].filter(l => l.left > 0).sort((a, b) => b.exp.localeCompare(a.exp)).forEach(l => { if (need > 0) take(l); });
+  sumLots(u); return got;
+}
+const expiringSoon = (u, days = 30) => { const lim = addDays(days), t = nowIso(); return u.lots.filter(l => l.left > 0 && l.exp >= t && l.exp <= lim).reduce((a, l) => a + l.left, 0); };
+
+/* ---------- 쿠폰 ---------- */
+function giveCoupon(u, c) { u.coupons.push({ id: 'C' + Date.now().toString(36) + Math.random().toString(36).slice(2, 4), name: c.name, value: c.value, min: c.min, exp: addDays(c.days), used: false }); }
+const couponOk = (c, sub) => !c.used && c.exp >= nowIso() && sub >= c.min;
+
+/* ---------- 거래 내역 · 리뷰 ---------- */
+const TRADE_KEY = 'gs_trades', REVIEW_KEY = 'gs_reviews';
+let realTrades = LS.get(TRADE_KEY, []), reviews = LS.get(REVIEW_KEY, []);
+function mockTrades(p, size) {
+  const base = sizePrice(p, size); let r = p.seed * 131 + size * 7, d = Date.now(); const out = [];
+  for (let i = 0; i < 6; i++) { r = (r * 9301 + 49297) % 233280; d -= (1 + (r % 4)) * 86400000; out.push({ t: iso(d), price: Math.round(base * (1 + ((r / 233280) - .5) * .08) / 1000) * 1000 }); }
+  return out;
+}
+function tradesFor(p, size) {
+  const real = realTrades.filter(x => x.pid === p.id && x.size === size).map(x => ({ t: x.t.slice(0, 10), price: x.price }));
+  return [...real, ...mockTrades(p, size)].sort((a, b) => b.t.localeCompare(a.t)).slice(0, 8);
+}
+const reviewsOf = pid => reviews.filter(r => r.pid === pid);
+const avgRating = pid => { const a = reviewsOf(pid); return a.length ? a.reduce((s, r) => s + r.rating, 0) / a.length : 0; };
+const maskName = n => n.length >= 3 ? n[0] + '*'.repeat(n.length - 2) + n.at(-1) : n[0] + '*';
+const starStr = n => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
+
+/* ---------- 주문 상태 ---------- */
+const ST = { WAIT:'검수 대기', INSP:'검수 중', PASS:'검수 합격', SHIP:'배송중', DONE:'배송 완료', CANCEL:'취소 완료', REFUND:'환불 완료' };
+const GRADE = { S:'새 상품 · 박스까지 완전한 상태', A:'새 상품 · 박스에 미세한 흠집', B:'새 상품 · 박스 눌림 등 경미한 보관 흔적' };
+const statCls = st => ({ '검수 중':'s-ing', '검수 합격':'s-pass', '배송중':'s-ship', '배송 완료':'s-pass', '취소 완료':'s-bad', '환불 완료':'s-bad' })[st] || '';
+function pushHist(o, st, note) { if (!o.hist) o.hist = [{ s: '주문 접수', t: o.d }]; o.hist.push({ s: st, t: stamp(), note }); o.status = st; }
+const allOrders = () => Object.values(users).flatMap(u => (u.orders || []).map(o => ({ u, o })));
+/* 취소·검수 불합격 환불: 재고 복원, 사용 포인트 복원, 적립 포인트 회수, 쿠폰 복원, 누적금액 차감 */
+function refundOrder(u, o, reason, status) {
+  ensureLots(u);
+  o.items.forEach(i => { const r = invRow(i.id, i.size); if (r) { r.stock += 1; stockLog.unshift({ t: stamp(), sku: `${i.id}-${i.size}`, type: '취소', delta: 1, note: `${o.id} ${reason}` }); } });
+  u.spent = Math.max(0, u.spent - (o.sub - (o.couponDisc || 0) - o.use));
+  let back = 0, revoked = 0;
+  if (o.use) { back = o.use; if (o.useLots && o.useLots.length) returnPoints(u, o.useLots); else addLot(u, o.use, 30, '환불 복원'); }
+  if (o.earn) revoked = revokePoints(u, o.earn, o.earnLot);
+  if (o.couponId) { const c = (u.coupons || []).find(x => x.id === o.couponId); if (c) { c.used = false; if (c.exp < nowIso()) c.exp = addDays(7); } }
+  if (back) u.history.unshift({ d: today(), type: '환불', amt: back, desc: `주문 ${o.id} ${reason} · 사용 포인트 복원` });
+  if (revoked) u.history.unshift({ d: today(), type: '회수', amt: -revoked, desc: `주문 ${o.id} ${reason} · 적립 포인트 회수` });
+  o.refund = { amt: o.pay, t: stamp(), reason, back, revoked };
+  pushHist(o, status, reason);
+  saveInventory(); saveUsers();
+}
 const stamp = () => { const d = new Date(), z = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())} ${z(d.getHours())}:${z(d.getMinutes())}`; };
 
 /* ---------- 유틸 ---------- */
@@ -914,10 +1095,12 @@ $('#signForm').addEventListener('submit', async e => {
   const salt = rndSalt();
   users[em] = { email: em, name: name.value.trim(), phone: ph.value, salt, hash: await hashPw(pw.value, salt),
     points: SIGNUP_BONUS, spent: 0, joined: today(), marketing: $('#sMkt').checked,
-    history: [{ d: today(), type: '가입', amt: SIGNUP_BONUS, desc: '회원가입 축하 포인트' }], orders: [], wish: [] };
+    lots: [{ id: 'L-signup', amt: SIGNUP_BONUS, left: SIGNUP_BONUS, exp: addDays(SIGNUP_EXP_DAYS), src: '가입 보너스' }], coupons: [],
+    history: [{ d: today(), type: '가입', amt: SIGNUP_BONUS, desc: '회원가입 축하 포인트', exp: addDays(SIGNUP_EXP_DAYS) }], orders: [], wish: [] };
+  giveCoupon(users[em], WELCOME_COUPON);
   saveUsers(); sessionEmail = em; LS.set('gs_session', em);
   e.target.reset(); closeM('m-auth'); renderAll();
-  toast(`가입을 환영합니다! <b>${pts(SIGNUP_BONUS)}</b>가 적립되었습니다.`);
+  toast(`가입을 환영합니다! <b>${pts(SIGNUP_BONUS)}</b>와 할인쿠폰이 지급되었습니다.`);
   if (pendingCheckout) { pendingCheckout = false; startCheckout(); }
 });
 
@@ -986,24 +1169,58 @@ function spark(arr) {
   return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="최근 거래가 추이"><polyline points="${pts_.join(' ')}" fill="none" stroke="#c9a24b" stroke-width="2" stroke-linejoin="round"/><circle cx="${pts_.at(-1).split(',')[0]}" cy="${pts_.at(-1).split(',')[1]}" r="4" fill="#e8cb7e"/></svg>`;
 }
 function openProduct(id) {
-  curP = byId(id); selSize = null; renderProduct(); openM('m-product');
+  curP = byId(id); selSize = null; pdTab = 'info'; renderProduct(); openM('m-product');
+}
+let pdTab = 'info';
+function tradeTab(p) {
+  const sz = selSize || 260, list = tradesFor(p, sz);
+  const rows = SIZES.map(s => { const t = tradesFor(p, s)[0], st = sizeStock(p.id, s); return `<tr${s === sz ? ' style="background:rgba(201,162,75,.12)"' : ''}><td class="num"><b>${s}</b></td><td class="num">${won(t.price)}</td><td class="num">${st < 1 ? '품절' : won(sizePrice(p, s))}</td><td class="num">${st}</td></tr>`; }).join('');
+  return `<h4 style="margin-bottom:10px">사이즈별 시세</h4><div class="adm-wrap" style="max-height:260px;margin-bottom:26px"><table class="tbl c"><thead><tr><th>사이즈</th><th>최근 거래가</th><th>즉시구매가</th><th>재고</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <h4 style="margin-bottom:10px">${sz}mm 최근 거래 내역${selSize ? '' : ' <span style="color:var(--mute);font-weight:400">(사이즈를 선택하면 바뀝니다)</span>'}</h4>
+    <table class="tbl c"><thead><tr><th>거래일</th><th>거래가</th><th>직전 대비</th></tr></thead><tbody>${list.map((x, i) => { const prev = list[i + 1], ch = prev ? (x.price - prev.price) / prev.price * 100 : null; return `<tr><td class="num">${x.t}</td><td class="num">${won(x.price)}</td><td class="num ${ch === null ? '' : ch >= 0 ? 'plus' : 'minus'}">${ch === null ? '—' : (ch >= 0 ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(1) + '%'}</td></tr>`; }).join('')}</tbody></table>
+    <p class="note">시세는 예시 데이터입니다. 실제 주문이 들어오면 이 목록에 함께 표시됩니다.</p>`;
+}
+function reviewTab(p) {
+  const rv = reviewsOf(p.id).sort((a, b) => b.d.localeCompare(a.d)), avg = avgRating(p.id);
+  return `${rv.length ? `<p style="margin-bottom:6px"><span class="stars" style="font-size:20px">${starStr(avg)}</span> <b>${avg.toFixed(1)}</b> <span style="color:var(--mute)">(${rv.length}개)</span></p>` : ''}
+    ${rv.length ? rv.map(r => `<div class="rv"><div class="h"><span class="stars">${starStr(r.rating)}</span><b>${esc(r.name)}</b><small>${r.size}mm · ${r.d}</small></div><p>${esc(r.text)}</p></div>`).join('') : '<div class="empty-s">아직 리뷰가 없어요.<br>배송이 완료되면 첫 리뷰를 남길 수 있어요.</div>'}
+    <p class="note">리뷰는 배송 완료된 구매자만 작성할 수 있고, 작성하면 ${pts(REVIEW_REWARD)}가 적립됩니다.</p>`;
 }
 function renderProduct() {
-  const p = curP, u = me(), t = tierOf(u ? u.spent : 0), up = p.change >= 0;
+  const p = curP, u = me(), t = tierOf(u ? u.spent : 0), up = p.change >= 0, inf = infoOf(p), rv = reviewsOf(p.id), avg = avgRating(p.id);
+  const detail = pdTab === 'info'
+    ? `<p class="pd-desc">${esc(pname(p))}은(는) ${p.year}년에 ${p.qty.toLocaleString()}켤레만 발매된 한정 모델입니다. ${esc(inf.story || '')}</p>
+       <table class="spec"><tr><th>브랜드</th><td>${p.brand}</td></tr><tr><th>모델 · 컬러</th><td>${esc(p.name)} · ${esc(p.cw)}</td></tr><tr><th>소재</th><td>${esc(inf.mat || '-')}</td></tr><tr><th>밑창</th><td>${esc(inf.sole || '-')}</td></tr><tr><th>발매</th><td>${p.year}년 · 발매가 ${won(p.retail)} · 한정 ${p.qty.toLocaleString()}켤레</td></tr><tr><th>스타일 코드</th><td class="num">${inf.code}</td></tr><tr><th>검수 기준</th><td>소재·봉제·라벨·박스 정보를 대조한 뒤 상태 등급(S/A/B)을 부여합니다.</td></tr></table>`
+    : pdTab === 'trade' ? tradeTab(p) : reviewTab(p);
   $('#pdBody').innerHTML = `
     <div class="pd-img"><img src="img/${p.id}.svg" alt="${esc(pname(p))}"></div>
     <div class="pd-body">
       <span class="brand">${p.brand}</span>
       <h2>${esc(p.name)} ‘${esc(p.cw)}’</h2>
       <p class="cw">${p.year}년 발매 · 한정 ${p.qty.toLocaleString()}켤레</p>
+      ${rv.length ? `<span class="rating"><span class="stars">★</span><b style="color:var(--ink)">${avg.toFixed(1)}</b> 리뷰 ${rv.length}개</span>` : ''}
       <div class="pd-meta"><div><small>발매가</small><b class="num">${won(p.retail)}</b></div><div><small>최근 거래가</small><b class="num">${won(p.trades.at(-2))}</b></div><div><small>8회 변동</small><b class="trend ${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(p.change).toFixed(1)}%</b></div></div>
-      <strong style="font-size:14px;margin-bottom:10px">사이즈 선택 (mm) <span style="color:var(--mute);font-weight:400">· 총 재고 ${totalStock(p)}켤레</span></strong>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px"><strong style="font-size:14px">사이즈 선택 (mm) <span style="color:var(--mute);font-weight:400">· 총 재고 ${totalStock(p)}켤레</span></strong><button type="button" class="linkbtn u" id="sizeGuide" style="font-size:13px">사이즈 가이드</button></div>
       <div class="sizes" role="radiogroup" aria-label="사이즈">${SIZES.map(s => { const st = sizeStock(p.id, s); return `<button class="size${selSize===s?' on':''}" data-size="${s}" role="radio" aria-checked="${selSize===s}" ${st<1?'disabled':''}><b>${s}</b><small>${st<1?'품절':won(sizePrice(p,s)).replace('원','')}</small>${st<1?'':`<span class="stk${st<=2?' low':''}">${st<=2?`마지막 ${st}켤레`:`재고 ${st}`}</span>`}</button>`; }).join('')}</div>
       <div class="spark">${spark(p.trades)}<div class="spark-l"><span>최근 거래가 흐름</span><span>검수 통과 상품만 판매</span></div></div>
       <div class="pd-price"><span>${selSize ? selSize + 'mm 즉시구매가' : '사이즈를 선택하세요'}</span><b class="num">${selSize ? won(sizePrice(p, selSize)) : '—'}</b></div>
       ${selSize ? `<p class="note" style="margin:-8px 0 14px;color:var(--gold2)">${u ? t.kr + ' 등급' : '비회원'} 적립 ${t.rate}% · 약 ${pts(Math.floor(sizePrice(p, selSize) * t.rate / 100))}</p>` : ''}
       <div class="pd-act"><button class="btn btn-line" id="addCart" ${selSize?'':'disabled'}>장바구니</button><button class="btn btn-gold" id="buyNow" ${selSize?'':'disabled'}>바로 구매</button></div>
-    </div>`;
+    </div>
+    <div class="pd-more"><div class="tabs">${[['info','상세 정보'],['trade','거래 내역'],['review',`리뷰 ${rv.length}`]].map(([k, v]) => `<button data-pdtab="${k}" class="${pdTab===k?'on':''}">${v}</button>`).join('')}</div>${detail}</div>`;
+}
+$('#pdBody').addEventListener('click', e => {
+  const t = e.target.closest('[data-pdtab]'); if (t) { pdTab = t.dataset.pdtab; renderProduct(); }
+  if (e.target.id === 'sizeGuide') openSizeGuide();
+});
+function openSizeGuide() {
+  $('#sizeBody').innerHTML = `<h2 class="m-title">사이즈 가이드</h2><p class="m-sub">발 길이(mm)에 맞춰 고르세요. 일반적인 남성 사이즈 환산 참고표이며 브랜드마다 조금씩 달라요.</p>
+    <div class="adm-wrap" style="max-height:42vh"><table class="tbl c"><thead><tr><th>한국(mm)</th><th>US</th><th>UK</th><th>EU</th></tr></thead><tbody>${SIZES.map(s => `<tr${selSize === s ? ' style="background:rgba(201,162,75,.14)"' : ''}><td class="num"><b>${s}</b></td><td>${SIZE_MAP[s][0]}</td><td>${SIZE_MAP[s][1]}</td><td>${SIZE_MAP[s][2]}</td></tr>`).join('')}</tbody></table></div>
+    <h3>발 길이 재는 방법</h3>
+    <ul><li>벽에 뒤꿈치를 붙이고 종이 위에 서서, 가장 긴 발가락 끝까지 길이를 잽니다.</li><li>저녁에 발이 조금 커진 상태에서 재면 더 정확해요.</li><li>잰 길이에 5~10mm를 더한 사이즈가 편하게 신는 크기예요.</li></ul>
+    <h3>고를 때 참고하세요</h3>
+    <ul><li>발볼이 넓거나 두꺼운 양말을 신는다면 한 사이즈 크게 고르세요.</li><li>사이즈마다 재고와 가격이 달라요. 상세 화면에서 사이즈별 시세를 확인할 수 있어요.</li></ul>`;
+  openM('m-size');
 }
 $('#pdBody').addEventListener('click', e => {
   const s = e.target.closest('[data-size]');
@@ -1020,14 +1237,24 @@ function addToCart(id, size, silent) {
   if (cart.some(c => c.id === id && c.size === size)) { if (!silent) toast('이미 담긴 상품입니다. (상품당 1켤레)'); return; }
   cart.push({ id, size }); saveCart(); renderCart(); if (!silent) toast('장바구니에 담았습니다.');
 }
-function calc(items = cart, use = 0) {
+function calc(items = cart, use = 0, couponId = null) {
   const u = me(), t = tierOf(u ? u.spent : 0);
   const sub = items.reduce((a, c) => a + sizePrice(byId(c.id), c.size), 0);
   const ship = !items.length ? 0 : (t.key !== 'bronze' || sub >= FREE_SHIP_BRONZE) ? 0 : SHIP_FEE;
-  use = Math.max(0, Math.min(use, sub, u ? u.points : 0));
-  const pay = sub - use + ship;
-  const earn = Math.floor((sub - use) * t.rate / 100);
-  return { sub, ship, use, pay, earn, t, rate: t.rate };
+  const cp = u && couponId ? (u.coupons || []).find(c => c.id === couponId) : null;
+  const couponDisc = cp && couponOk(cp, sub) ? Math.min(cp.value, sub) : 0;
+  use = Math.max(0, Math.min(use, sub - couponDisc, u ? u.points : 0));
+  const pay = sub - couponDisc - use + ship;
+  const earn = Math.floor((sub - couponDisc - use) * t.rate / 100);
+  return { sub, ship, couponDisc, use, pay, earn, t, rate: t.rate };
+}
+const couponVal = () => ($('#cCoupon') || {}).value || null;
+const payBase = () => { const c = calc(cart, 0, couponVal()); return c.sub - c.couponDisc; };
+function fillCoupons() {
+  const u = me(), sub = calc().sub, sel = $('#cCoupon');
+  const list = (u.coupons || []).filter(c => !c.used && c.exp >= nowIso());
+  sel.innerHTML = '<option value="">쿠폰 사용 안 함</option>' + list.map(c => `<option value="${c.id}"${sub < c.min ? ' disabled' : ''}>${esc(c.name)}${sub < c.min ? ` (${won(c.min)} 이상 주문 시)` : ''}</option>`).join('');
+  const ok = list.find(c => sub >= c.min); if (ok) sel.value = ok.id;
 }
 function renderCart() {
   $('#cartCount').textContent = cart.length || ''; $('#cartCount').dataset.n = cart.length;
@@ -1059,16 +1286,17 @@ function beginCheckout() {
 function startCheckout() {
   const u = me(); closeM('m-cart');
   $('#cName').value = $('#cName').value || u.name; $('#cPhone').value = $('#cPhone').value || u.phone;
-  $('#usePt').value = ''; $('#cAgree').checked = false; $('#coMsg').hidden = true;
+  $('#usePt').value = ''; $('#cAgree').checked = false; $('#coMsg').hidden = true; fillCoupons();
   $('#coItems').innerHTML = cart.map(c => { const p = byId(c.id); return `<div class="co-item"><img src="img/${p.id}.svg" alt=""><div>${esc(pname(p))}<br><span style="color:var(--mute)">${c.size}mm</span></div><b class="num">${won(sizePrice(p, c.size))}</b></div>`; }).join('');
   updateCo(); openM('m-checkout');
 }
 function useVal() { return parseInt(($('#usePt').value || '0').replace(/\D/g, ''), 10) || 0; }
 function updateCo() {
-  const u = me(), raw = useVal(), k = calc(cart, raw), note = $('#ptNote');
-  const maxUse = Math.min(k.sub, u.points);
+  const u = me(), raw = useVal(), k = calc(cart, raw, couponVal()), note = $('#ptNote');
+  const maxUse = Math.min(k.sub - k.couponDisc, u.points);
   note.textContent = `보유 ${pts(u.points)} · ${MIN_USE_POINT.toLocaleString()}P 이상, 100P 단위로 사용할 수 있습니다.`;
   $('#coSum').innerHTML = `<div class="sum-row"><span>상품 금액</span><span class="num">${won(k.sub)}</span></div>
+    <div class="sum-row"><span>쿠폰 할인</span><span class="num">-${won(k.couponDisc)}</span></div>
     <div class="sum-row"><span>포인트 사용</span><span class="num">-${won(k.use)}</span></div>
     <div class="sum-row"><span>배송비</span><span class="num">${k.ship ? won(k.ship) : '무료'}</span></div>
     <div class="sum-row"><span>적립 예정 (${k.t.kr} ${k.rate}%)</span><span class="earn num">+${pts(k.earn)}</span></div>
@@ -1077,8 +1305,9 @@ function updateCo() {
   return { k, maxUse };
 }
 $('#usePt').addEventListener('input', e => { const v = useVal(); e.target.value = v ? v.toLocaleString() : ''; updateCo(); });
-$('#usePt').addEventListener('blur', e => { const u = me(); let v = useVal(); const max = Math.min(calc().sub, u.points); v = Math.min(v, max); v = v < MIN_USE_POINT ? 0 : Math.floor(v / 100) * 100; e.target.value = v ? v.toLocaleString() : ''; updateCo(); });
-$('#useAll').addEventListener('click', () => { const u = me(); let v = Math.min(calc().sub, u.points); v = v < MIN_USE_POINT ? 0 : Math.floor(v / 100) * 100; $('#usePt').value = v ? v.toLocaleString() : ''; if (!v) toast(`포인트는 ${MIN_USE_POINT.toLocaleString()}P 이상부터 사용할 수 있습니다.`); updateCo(); });
+$('#usePt').addEventListener('blur', e => { const u = me(); let v = useVal(); const max = Math.min(payBase(), u.points); v = Math.min(v, max); v = v < MIN_USE_POINT ? 0 : Math.floor(v / 100) * 100; e.target.value = v ? v.toLocaleString() : ''; updateCo(); });
+$('#useAll').addEventListener('click', () => { const u = me(); let v = Math.min(payBase(), u.points); v = v < MIN_USE_POINT ? 0 : Math.floor(v / 100) * 100; $('#usePt').value = v ? v.toLocaleString() : ''; if (!v) toast(`포인트는 ${MIN_USE_POINT.toLocaleString()}P 이상부터 사용할 수 있습니다.`); updateCo(); });
+$('#cCoupon').addEventListener('change', updateCo);
 $('#payGrid').addEventListener('click', e => {
   const b = e.target.closest('.pay'); if (!b) return; payMethod = b.dataset.pay;
   $$('.pay').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-checked', x === b); });
@@ -1119,7 +1348,7 @@ $('#coForm').addEventListener('submit', async e => {
     cart = cart.filter(c => sizeStock(c.id, c.size) >= 1); saveCart(); renderCart(); renderGrid(); closeM('m-checkout');
     return toast('재고가 소진된 상품을 장바구니에서 뺐습니다. 다시 확인해 주세요.');
   }
-  const k = calc(cart, use);
+  const k = calc(cart, use, couponVal());
   $('#coMsg').hidden = true;
   const btn = $('#payBtn'); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> 결제 진행 중';
   const r = await PaymentGateway.request({ method: payMethod, amount: k.pay, orderName: pname(byId(cart[0].id)) + (cart.length > 1 ? ` 외 ${cart.length - 1}건` : '') });
@@ -1127,9 +1356,9 @@ $('#coForm').addEventListener('submit', async e => {
   if (!r.ok) { updateCo(); return coError('결제에 실패했습니다. 결제 수단을 확인하고 다시 시도해 주세요.'); }
 
   /* 주문 확정 → 포인트 사용·적립 → 누적금액·등급 갱신 */
-  const before = tierOf(u.spent), spentAdd = k.sub - k.use;
+  const before = tierOf(u.spent), spentAdd = k.sub - k.couponDisc - k.use, cpId = k.couponDisc ? couponVal() : null;
   const order = { id: 'GS' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + Math.floor(1000 + Math.random() * 9000), d: today(),
-    items: cart.map(c => ({ id: c.id, size: c.size, price: sizePrice(byId(c.id), c.size) })), sub: k.sub, ship: k.ship, use: k.use, pay: k.pay, earn: k.earn, rate: k.rate, method: PAY_NAME[payMethod], tx: r.txId, status: '검수 대기',
+    items: cart.map(c => ({ id: c.id, size: c.size, price: sizePrice(byId(c.id), c.size) })), sub: k.sub, ship: k.ship, use: k.use, pay: k.pay, earn: k.earn, rate: k.rate, method: PAY_NAME[payMethod], tx: r.txId, status: ST.WAIT, couponId: cpId, couponDisc: k.couponDisc, hist: [{ s: '주문 접수', t: stamp() }],
     to: { name: f('cName').value.trim(), addr: `${f('cAddr').value.trim()} ${f('cAddr2').value.trim()}`.trim() } };
   u.orders.unshift(order);
   order.items.forEach(i => {   /* 재고 표 차감 + 입출고 기록 */
@@ -1137,8 +1366,11 @@ $('#coForm').addEventListener('submit', async e => {
     stockLog.unshift({ t: stamp(), sku: `${i.id}-${i.size}`, type: '판매', delta: -1, note: order.id });
   });
   saveInventory();
-  if (k.use) { u.points -= k.use; u.history.unshift({ d: today(), type: '사용', amt: -k.use, desc: `주문 ${order.id} 포인트 사용` }); }
-  if (k.earn) { u.points += k.earn; u.history.unshift({ d: today(), type: '적립', amt: k.earn, desc: `주문 ${order.id} · ${k.t.kr} ${k.rate}% 적립` }); }
+  ensureLots(u);
+  if (k.use) { order.useLots = spendPoints(u, k.use); u.history.unshift({ d: today(), type: '사용', amt: -k.use, desc: `주문 ${order.id} 포인트 사용` }); }
+  if (k.earn) { const lot = addLot(u, k.earn, POINT_EXP_DAYS, '구매 적립'); order.earnLot = lot.id; u.history.unshift({ d: today(), type: '적립', amt: k.earn, desc: `주문 ${order.id} · ${k.t.kr} ${k.rate}% 적립`, exp: lot.exp }); }
+  if (cpId) { const c = u.coupons.find(x => x.id === cpId); if (c) { c.used = true; c.orderId = order.id; } }
+  order.items.forEach(i => realTrades.push({ pid: i.id, size: i.size, price: i.price, t: stamp() })); LS.set(TRADE_KEY, realTrades.slice(-500));
   u.spent += spentAdd; saveUsers();
   const after = tierOf(u.spent);
   cart = []; saveCart(); closeM('m-checkout'); renderAll();
@@ -1154,28 +1386,149 @@ $('#doneBody').addEventListener('click', e => { if (e.target.id === 'doneShop') 
 /* =========================================================
    MY PAGE
    ========================================================= */
-let myTab = 'points';
+let myTab = 'points', curOrder = null, cancelArmed = null, rvState = null;
 function openMy(tab) { myTab = typeof tab === 'string' ? tab : 'points'; renderMy(); openM('m-my'); }
 function renderMy() {
   const u = me(); if (!u) return;
-  const t = tierOf(u.spent), n = nextTier(t);
+  ensureLots(u);
+  const t = tierOf(u.spent), n = nextTier(t), soon = expiringSoon(u);
   const pct = n ? Math.min(100, (u.spent - t.min) / (n.min - t.min) * 100) : 100;
+  const cps = (u.coupons || []).filter(c => !c.used && c.exp >= nowIso());
   let body = '';
-  if (myTab === 'points') body = u.history.length ? `<table class="tbl"><thead><tr><th>일자</th><th>구분</th><th>내용</th><th>포인트</th></tr></thead><tbody>${u.history.map(h => `<tr><td class="num">${h.d}</td><td>${h.type}</td><td>${esc(h.desc)}</td><td class="num ${h.amt>0?'plus':'minus'}">${h.amt>0?'+':''}${h.amt.toLocaleString()}P</td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">포인트 내역이 없습니다.</div>';
-  if (myTab === 'orders') body = u.orders.length ? `<table class="tbl"><thead><tr><th>주문</th><th>상품</th><th>상태</th><th>결제</th></tr></thead><tbody>${u.orders.map(o => `<tr><td class="num">${o.id}<br><small style="color:var(--mute)">${o.d}</small></td><td>${o.items.map(i => `${esc(pname(byId(i.id)))} (${i.size})`).join('<br>')}</td><td>${o.status}</td><td class="num">${won(o.pay)}<br><small class="earn">+${pts(o.earn)}</small></td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">아직 주문 내역이 없습니다.<br>첫 구매 시 ' + TIERS[0].rate + '% 포인트가 적립됩니다.</div>';
+  if (myTab === 'points') body = `<p class="note" style="margin:6px 0 14px">${soon ? `<b style="color:var(--gold2)">30일 안에 ${pts(soon)}</b>가 소멸돼요. ` : ''}포인트 유효기간은 구매 적립 ${POINT_EXP_DAYS / 365}년, 가입 포인트 ${SIGNUP_EXP_DAYS / 30}개월이에요. 오래된 포인트부터 먼저 사용돼요.</p>` + (u.history.length ? `<table class="tbl"><thead><tr><th>일자</th><th>구분</th><th>내용</th><th>유효기간</th><th>포인트</th></tr></thead><tbody>${u.history.map(h => `<tr><td class="num">${h.d}</td><td>${h.type}</td><td>${esc(h.desc)}</td><td class="num">${h.exp ? '~' + h.exp : '—'}</td><td class="num ${h.amt>0?'plus':'minus'}">${h.amt>0?'+':''}${h.amt.toLocaleString()}P</td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">포인트 내역이 없습니다.</div>');
+  if (myTab === 'orders') body = u.orders.length ? `<table class="tbl"><thead><tr><th>주문</th><th>상품</th><th>상태</th><th>결제</th><th></th></tr></thead><tbody>${u.orders.map(o => `<tr><td class="num">${o.id}<br><small style="color:var(--mute)">${o.d}</small></td><td>${o.items.map(i => `${esc(pname(byId(i.id)))} (${i.size})`).join('<br>')}</td><td><span class="stat ${statCls(o.status)}">${o.status}</span></td><td class="num">${won(o.pay)}<br><small class="earn">${[ST.CANCEL, ST.REFUND].includes(o.status) ? '환불' : '+' + pts(o.earn)}</small></td><td><button class="btn btn-ghost btn-sm" data-order="${o.id}">상세</button></td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">아직 주문 내역이 없습니다.<br>첫 구매 시 ' + TIERS[0].rate + '% 포인트가 적립됩니다.</div>';
+  if (myTab === 'coupons') body = (u.coupons || []).length ? [...u.coupons].reverse().map(c => { const off = c.used || c.exp < nowIso(); return `<div class="cp${off ? ' off' : ''}"><div><b>${won(c.value)} 할인</b><small>${esc(c.name)} · ${won(c.min)} 이상 주문 시</small></div><div style="text-align:right;font-size:13px">${c.used ? '사용 완료' : c.exp < nowIso() ? '기간 만료' : '~' + c.exp + '까지'}</div></div>`; }).join('') : '<div class="empty-s">보유한 쿠폰이 없습니다.</div>';
   if (myTab === 'wish') body = u.wish.length ? `<div class="mini-grid">${u.wish.map(id => { const p = byId(id); return `<div class="mini" data-mv="${id}"><img src="img/${id}.svg" alt=""><div>${esc(pname(p))}<br><b class="num">${won(p.price)}</b></div></div>`; }).join('')}</div>` : '<div class="empty-s">찜한 상품이 없습니다.</div>';
   $('#myBody').innerHTML = `<div class="my-head">
       <div class="my-top"><div><span class="tier-pill">${medalDot(t)} ${t.name}</span><h3>${esc(u.name)}님의 멤버십</h3></div><button class="btn btn-ghost btn-sm" id="logoutBtn">로그아웃</button></div>
-      <div class="my-stats"><div><small>보유 포인트</small><b class="num earn">${pts(u.points)}</b></div><div><small>현재 적립률</small><b>${t.rate}%</b></div><div><small>누적 구매금액</small><b class="num">${won(u.spent)}</b></div></div>
+      <div class="my-stats"><div><small>보유 포인트</small><b class="num earn">${pts(u.points)}</b></div><div><small>현재 적립률 · 쿠폰</small><b>${t.rate}% · ${cps.length}장</b></div><div><small>누적 구매금액</small><b class="num">${won(u.spent)}</b></div></div>
       <div class="prog"><div class="prog-bar"><i style="width:${pct}%"></i></div><p>${n ? `${n.kr} 등급까지 <b style="color:var(--gold2)">${won(n.min - u.spent)}</b> 남았습니다. (${n.rate}% 적립)` : `최고 등급입니다. 모든 구매에 ${t.rate}%가 적립됩니다.`}</p></div>
     </div>
-    <div class="my-body"><div class="tabs" style="margin-top:6px">${[['points','포인트 내역'],['orders','주문 내역'],['wish','찜 목록']].map(([k, v]) => `<button data-my="${k}" class="${myTab===k?'on':''}">${v}</button>`).join('')}</div>${body}</div>`;
+    <div class="my-body"><div class="tabs" style="margin-top:6px">${[['points','포인트 내역'],['orders','주문 내역'],['coupons','쿠폰'],['wish','찜 목록']].map(([k, v]) => `<button data-my="${k}" class="${myTab===k?'on':''}">${v}</button>`).join('')}</div>${body}</div>`;
 }
 $('#myBody').addEventListener('click', e => {
   const t = e.target.closest('[data-my]'); if (t) { myTab = t.dataset.my; renderMy(); }
   if (e.target.id === 'logoutBtn') logout();
   const m = e.target.closest('[data-mv]'); if (m) { closeM('m-my'); openProduct(m.dataset.mv); }
+  const o = e.target.closest('[data-order]'); if (o) openOrder(o.dataset.order);
 });
+
+/* ---------- 주문 상세 · 배송 조회 · 검수 결과 · 취소 ---------- */
+function orderTL(o) {
+  const h = o.hist || [{ s: '주문 접수', t: o.d }], at = s => (h.find(x => x.s === s) || {}).t;
+  const base = ['주문 접수', ST.INSP, ST.PASS, ST.SHIP, ST.DONE], end = [ST.CANCEL, ST.REFUND].includes(o.status);
+  const steps = (end ? base.filter(s => s === '주문 접수' || at(s)) : base).map(s => ({ s, t: at(s), on: !!at(s) }));
+  if (end) steps.push({ s: o.status, t: at(o.status), on: true, bad: true });
+  return `<ul class="tl">${steps.map(x => `<li class="${x.on ? 'on' : ''}${x.bad ? ' bad' : ''}">${x.s === '주문 접수' ? '주문 접수 · 결제 완료' : x.s}${x.t ? `<small>${x.t}</small>` : ''}</li>`).join('')}</ul>`;
+}
+function orderHtml(o) {
+  const cd = o.couponDisc || 0, fin = [ST.CANCEL, ST.REFUND].includes(o.status);
+  let h = `<h2 class="m-title">주문 상세</h2><p class="m-sub"><span class="num">${o.id}</span> · ${o.d} <span class="stat ${statCls(o.status)}" style="margin-left:6px">${o.status}</span></p>`;
+  h += `<h4 style="margin:0 0 4px;font-size:14px">진행 상황</h4>` + orderTL(o);
+  if (o.insp) h += o.insp.result === '합격'
+    ? `<div class="box ok"><h4>검수 결과 · 정품 확인</h4><p>상태 등급 <b style="color:var(--ok)">${o.insp.grade}</b> — ${GRADE[o.insp.grade]}</p>${o.insp.note ? `<p style="color:var(--mute);margin-top:4px">${esc(o.insp.note)}</p>` : ''}</div>`
+    : `<div class="box bad"><h4>검수 불합격</h4><p>${esc(o.insp.note)}</p><p style="color:var(--mute);margin-top:4px">결제하신 금액은 전액 환불됩니다.</p></div>`;
+  if (o.track) {
+    const hh = o.hist || [], st = hh.find(x => x.s === ST.SHIP), dn = hh.find(x => x.s === ST.DONE);
+    h += `<div class="box"><h4>배송 조회</h4><dl class="od-grid"><dt>택배사</dt><dd>${o.track.courier}</dd><dt>송장번호</dt><dd class="num">${o.track.no}</dd></dl><ul class="tl" style="margin-top:14px"><li class="on">집화 · 상품 인수<small>${st ? st.t : ''}</small></li><li class="${dn ? 'on' : ''}">${dn ? '배송 완료' : '배송 중'}<small>${dn ? dn.t : '곧 도착해요'}</small></li></ul></div>`;
+  }
+  h += `<div class="box"><h4>주문 상품</h4>${o.items.map(i => { const p = byId(i.id), key = `${i.id}-${i.size}`, done = (o.reviewed || {})[key]; return `<div class="co-item" style="align-items:center"><img src="img/${p.id}.svg" alt=""><div>${esc(pname(p))}<br><span style="color:var(--mute)">${i.size}mm · ${won(i.price)}</span></div>${o.status === ST.DONE ? (done ? '<span class="stat s-pass">리뷰 작성 완료</span>' : `<button class="btn btn-ghost btn-sm" data-rv="${o.id}|${key}">리뷰 +${REVIEW_REWARD}P</button>`) : ''}</div>`; }).join('')}</div>`;
+  h += `<div class="box"><h4>결제 정보</h4><dl class="od-grid"><dt>결제수단</dt><dd>${o.method}</dd><dt>상품 금액</dt><dd class="num">${won(o.sub)}</dd>${cd ? `<dt>쿠폰 할인</dt><dd class="num">-${won(cd)}</dd>` : ''}${o.use ? `<dt>포인트 사용</dt><dd class="num">-${won(o.use)}</dd>` : ''}<dt>배송비</dt><dd class="num">${o.ship ? won(o.ship) : '무료'}</dd><dt>결제 금액</dt><dd class="num"><b>${won(o.pay)}</b></dd><dt>적립 포인트</dt><dd class="num">${fin ? '회수됨' : '+' + pts(o.earn)}</dd></dl></div>`;
+  if (o.refund) h += `<div class="box bad"><h4>${o.status} · ${esc(o.refund.reason)}</h4><dl class="od-grid"><dt>환불 금액</dt><dd class="num">${won(o.refund.amt)}</dd><dt>사용 포인트 복원</dt><dd class="num">${o.refund.back ? '+' + pts(o.refund.back) : '—'}</dd><dt>적립 포인트 회수</dt><dd class="num">${o.refund.revoked ? '-' + pts(o.refund.revoked) : '—'}</dd><dt>처리 일시</dt><dd class="num">${o.refund.t}</dd></dl><p style="color:var(--mute);margin-top:8px">결제수단 환불은 카드사·결제사에 따라 영업일 기준 3~5일이 걸릴 수 있어요.</p></div>`;
+  h += `<div class="box"><h4>배송지</h4><p>${esc(o.to.name)}<br>${esc(o.to.addr)}</p></div>`;
+  if (o.status === ST.WAIT) h += `<button class="btn btn-ghost btn-block" id="cancelOrder">${cancelArmed === o.id ? '한 번 더 누르면 주문이 취소됩니다' : '주문 취소'}</button><p class="note">검수가 시작되기 전까지 취소할 수 있어요. 취소하면 결제 금액이 환불되고 사용한 포인트·쿠폰이 돌아옵니다.</p>`;
+  else if (o.status === ST.INSP || o.status === ST.PASS) h += `<p class="note">검수가 시작된 주문은 취소할 수 없어요. 검수를 통과하지 못하면 전액 환불됩니다.</p>`;
+  return h;
+}
+function renderOrder() { const u = me(), o = u && u.orders.find(x => x.id === curOrder); if (o) $('#orderBody').innerHTML = orderHtml(o); }
+function openOrder(id) { curOrder = id; cancelArmed = null; renderOrder(); openM('m-order'); }
+function refreshViews() { renderAll(); if ($('#m-my').classList.contains('open')) renderMy(); if ($('#m-order').classList.contains('open')) renderOrder(); if ($('#m-product').classList.contains('open') && curP) renderProduct(); }
+$('#orderBody').addEventListener('click', e => {
+  const u = me(); if (!u) return;
+  if (e.target.id === 'cancelOrder') {
+    if (cancelArmed !== curOrder) { cancelArmed = curOrder; return renderOrder(); }
+    cancelArmed = null; const o = u.orders.find(x => x.id === curOrder); if (!o || o.status !== ST.WAIT) return;
+    refundOrder(u, o, '고객 요청 취소', ST.CANCEL); refreshViews();
+    return toast(`주문을 취소했어요. <b>${won(o.pay)}</b> 환불 예정`);
+  }
+  const rv = e.target.closest('[data-rv]'); if (rv) { const [oid, key] = rv.dataset.rv.split('|'); openReview(oid, key); }
+});
+
+/* ---------- 리뷰 작성 (배송 완료 후) ---------- */
+function openReview(oid, key) {
+  rvState = { oid, key, rating: 0 };
+  const pid = key.split('-')[0], size = key.split('-')[1];
+  $('#reviewBody').innerHTML = `<h2 class="m-title">리뷰 작성</h2><p class="m-sub">${esc(pname(byId(pid)))} · ${size}mm · 작성하면 ${pts(REVIEW_REWARD)}가 적립돼요.</p>
+    <div class="star-pick" id="starPick" role="radiogroup" aria-label="별점">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-star="${n}" aria-label="${n}점">★</button>`).join('')}</div>
+    <div class="f"><label for="rvText">후기</label><textarea class="field" id="rvText" rows="5" maxlength="300" placeholder="착용감, 사이즈, 상태 등 다른 구매자에게 도움이 될 내용을 적어 주세요."></textarea><div class="hint" id="rvCnt">0 / 300 (최소 10자)</div><div class="err" id="rvErr"></div></div>
+    <button class="btn btn-gold btn-block" id="rvSubmit">리뷰 등록하고 ${pts(REVIEW_REWARD)} 받기</button>`;
+  openM('m-review');
+}
+$('#reviewBody').addEventListener('click', e => {
+  const st = e.target.closest('[data-star]');
+  if (st) { rvState.rating = +st.dataset.star; $$('#starPick button').forEach(b => b.classList.toggle('on', +b.dataset.star <= rvState.rating)); }
+  if (e.target.id === 'rvSubmit') {
+    const u = me(), text = $('#rvText').value.trim(), err = $('#rvErr');
+    if (!rvState.rating) return err.textContent = '별점을 선택해 주세요.';
+    if (text.length < 10) return err.textContent = '후기를 10자 이상 적어 주세요.';
+    const o = u.orders.find(x => x.id === rvState.oid); if (!o || o.status !== ST.DONE || (o.reviewed || {})[rvState.key]) return;
+    const [pid, size] = rvState.key.split('-');
+    reviews.unshift({ id: 'R' + Date.now().toString(36), pid, size: +size, name: maskName(u.name), email: u.email, rating: rvState.rating, text, d: nowIso(), oid: o.id });
+    LS.set(REVIEW_KEY, reviews);
+    o.reviewed = o.reviewed || {}; o.reviewed[rvState.key] = true;
+    ensureLots(u); const lot = addLot(u, REVIEW_REWARD, POINT_EXP_DAYS, '리뷰 작성');
+    u.history.unshift({ d: today(), type: '적립', amt: REVIEW_REWARD, desc: `리뷰 작성 보상 · ${pname(byId(pid))}`, exp: lot.exp });
+    saveUsers(); closeM('m-review'); refreshViews(); toast(`리뷰를 등록했어요. <b>${pts(REVIEW_REWARD)}</b> 적립!`);
+  }
+});
+$('#reviewBody').addEventListener('input', e => { if (e.target.id === 'rvText') { $('#rvCnt').textContent = `${e.target.value.length} / 300 (최소 10자)`; $('#rvErr').textContent = ''; } });
+
+/* =========================================================
+   POLICIES · FOOTER INFO
+   ========================================================= */
+const POLICIES = {
+  terms: { title: '이용약관', html: () => `<p>시행일: ${SITE.effective}</p>
+    <h3>제1조 (목적)</h3><p>이 약관은 ${esc(SITE.company)}(이하 “회사”)이 운영하는 ${SITE.name}(이하 “몰”)에서 한정판 스니커 리셀 상품을 거래할 때 회사와 회원의 권리·의무와 책임을 정합니다.</p>
+    <h3>제2조 (정의)</h3><ul><li>“회원”은 이 약관에 동의하고 가입한 사람입니다.</li><li>“검수”는 회사가 상품의 정품 여부와 상태를 확인하고 등급(S·A·B)을 매기는 절차입니다.</li><li>“포인트”와 “쿠폰”은 회사가 구매 혜택으로 제공하는 것으로, 현금으로 바꿀 수 없습니다.</li></ul>
+    <h3>제3조 (약관의 효력과 변경)</h3><p>회사는 관련 법령을 어기지 않는 범위에서 약관을 바꿀 수 있으며, 바뀐 내용은 적용일 7일 전에(회원에게 불리한 경우 30일 전에) 몰에 알립니다.</p>
+    <h3>제4조 (회원가입)</h3><p>만 14세 이상이며 사실에 맞는 정보를 입력한 사람이 가입할 수 있습니다. 타인의 정보를 도용하면 이용이 제한될 수 있습니다.</p>
+    <h3>제5조 (상품 거래와 검수)</h3><ul><li>모든 상품은 결제 후 회사의 검수를 거친 뒤 배송합니다.</li><li>검수를 통과하지 못한 상품은 배송하지 않고, 결제 금액을 전액 환불합니다.</li><li>상품 가격과 재고는 거래 상황에 따라 바뀔 수 있으며, 결제가 끝난 주문의 가격은 바뀌지 않습니다.</li></ul>
+    <h3>제6조 (결제와 배송)</h3><p>회원은 몰이 제공하는 결제수단으로 대금을 냅니다. 배송비는 등급과 주문 금액에 따라 다르며 결제 화면에 표시됩니다.</p>
+    <h3>제7조 (포인트·쿠폰)</h3><ul><li>구매 금액의 일정 비율을 등급별로 포인트로 적립합니다. 구매 적립 포인트는 적립일로부터 ${POINT_EXP_DAYS / 365}년, 가입 포인트는 ${SIGNUP_EXP_DAYS / 30}개월이 지나면 소멸합니다.</li><li>주문을 취소하거나 환불하면 사용한 포인트·쿠폰은 돌려드리고, 그 주문으로 적립된 포인트는 회수합니다.</li><li>쿠폰은 표시된 조건과 기간 안에서만 쓸 수 있습니다.</li></ul>
+    <h3>제8조 (청약철회·환불)</h3><p>청약철회와 환불은 별도의 「청약철회·환불 안내」에 따릅니다.</p>
+    <h3>제9조 (회원의 의무)</h3><p>회원은 위조품 거래, 타인 정보 도용, 몰 운영 방해 행위를 해서는 안 됩니다.</p>
+    <h3>제10조 (책임 제한과 분쟁 해결)</h3><p>회사는 천재지변 등 불가항력으로 서비스를 제공하지 못한 경우 책임을 지지 않습니다. 이 약관과 관련한 분쟁은 대한민국 법을 따르며, 관할 법원은 민사소송법에 따릅니다.</p>` },
+  privacy: { title: '개인정보처리방침', html: () => `<p>시행일: ${SITE.effective}</p>
+    <p>${esc(SITE.company)}(이하 “회사”)은 개인정보 보호법에 따라 회원의 개인정보를 보호하고 관련 고충을 빠르게 처리하기 위해 이 방침을 둡니다.</p>
+    <h3>1. 수집하는 개인정보</h3><ul><li>회원가입: 이름, 이메일, 휴대폰 번호, 비밀번호(암호화해 저장)</li><li>주문·배송: 받는 분 이름, 연락처, 주소, 배송 요청사항</li><li>결제: 결제수단 정보는 결제대행사(PG사)가 처리하며, 회사는 카드번호 등을 저장하지 않습니다.</li></ul>
+    <h3>2. 이용 목적</h3><ul><li>회원 확인과 로그인, 주문 처리와 배송, 검수 결과 안내</li><li>포인트·쿠폰 운영, 고객 문의 응대</li><li>마케팅 정보 수신에 동의한 회원에게 드랍·혜택 소식 안내</li></ul>
+    <h3>3. 보유와 이용 기간</h3><p>회원 탈퇴 시 지체 없이 파기합니다. 다만 전자상거래 등에서의 소비자보호에 관한 법률에 따라 계약·청약철회 기록과 대금결제·재화 공급 기록은 5년, 소비자 불만·분쟁 처리 기록은 3년 동안 보관합니다.</p>
+    <h3>4. 제3자 제공과 처리 위탁</h3><ul><li>배송: 택배사에 받는 분 이름, 연락처, 주소를 전달합니다.</li><li>결제: 결제대행사(PG사)에 결제에 필요한 정보를 전달합니다.</li></ul><p>그 밖에는 회원의 동의 없이 개인정보를 제3자에게 제공하지 않습니다.</p>
+    <h3>5. 회원의 권리</h3><p>회원은 언제든지 자신의 개인정보를 열람·정정·삭제하거나 처리 정지를 요청할 수 있습니다. 아래 연락처로 요청해 주세요.</p>
+    <h3>6. 안전성 확보 조치</h3><p>비밀번호는 암호화해 저장하고, 개인정보에 접근할 수 있는 사람을 최소한으로 제한합니다.</p>
+    <h3>7. 개인정보 보호책임자</h3><p>책임자: ${esc(SITE.privacyOfficer)}<br>연락처: ${esc(SITE.tel)} · ${esc(SITE.email)}</p>` },
+  refund: { title: '청약철회·환불 안내', html: () => `<p>시행일: ${SITE.effective}</p>
+    <h3>1. 검수 불합격</h3><p>검수에서 정품이 아니거나 상품 기준에 맞지 않으면 배송하지 않고, 결제 금액(상품 금액과 배송비)을 전액 환불합니다. 사용한 포인트·쿠폰은 돌려드리고, 그 주문으로 적립된 포인트는 회수합니다.</p>
+    <h3>2. 주문 취소</h3><p>검수가 시작되기 전(검수 대기 상태)까지는 마이페이지 &gt; 주문 내역에서 바로 취소할 수 있습니다. 검수가 시작된 뒤에는 취소할 수 없습니다.</p>
+    <h3>3. 상품을 받은 뒤 청약철회</h3><ul><li>상품을 받은 날부터 7일 이내에 청약철회를 요청할 수 있습니다.</li><li>상품을 사용했거나 택·박스·구성품이 훼손되어 다시 팔기 어려울 만큼 가치가 줄었다면 철회가 제한될 수 있습니다.</li><li>상품 하자, 오배송이라면 받은 날부터 3개월 이내(또는 그 사실을 안 날부터 30일 이내)에 요청할 수 있습니다.</li></ul>
+    <h3>4. 반품 배송비</h3><p>단순 변심은 구매자가, 상품 하자나 오배송은 회사가 부담합니다.</p>
+    <h3>5. 환불 시기와 방법</h3><p>반품 상품을 확인한 뒤 3영업일 안에 결제수단으로 환불합니다. 카드 결제는 카드사에 따라 취소 반영에 3~5영업일이 걸릴 수 있습니다.</p>
+    <h3>6. 리셀 상품 안내</h3><p>한정판 리셀 상품은 박스 상태에 따라 검수 등급(S·A·B)이 다를 수 있으며, 등급은 주문 상세에서 확인할 수 있습니다.</p>
+    <h3>7. 문의</h3><p>${esc(SITE.tel)} · ${esc(SITE.email)} · ${esc(SITE.hours)}</p>` },
+};
+function openPolicy(key) {
+  const keys = Object.keys(POLICIES);
+  $('#policyBody').innerHTML = `<div class="tabs" style="margin-bottom:8px">${keys.map(k => `<button data-pol="${k}" class="${k === key ? 'on' : ''}">${POLICIES[k].title}</button>`).join('')}</div><h2 class="m-title">${POLICIES[key].title}</h2>${POLICIES[key].html()}`;
+  openM('m-policy'); $('#m-policy .modal').scrollTop = 0;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-policy]'); if (b) { e.preventDefault(); openPolicy(b.dataset.policy); }
+  const t = e.target.closest('[data-pol]'); if (t) openPolicy(t.dataset.pol);
+});
+function renderFooterInfo() {
+  $('#footContact').innerHTML = `<li>전화: ${esc(SITE.tel)}</li><li>이메일: ${esc(SITE.email)}</li><li>${esc(SITE.hours)}</li>`;
+  $('#legalInfo').innerHTML = `상호: ${esc(SITE.company)} · 대표: ${esc(SITE.ceo)} · 사업자등록번호: ${esc(SITE.biz)} · 통신판매업신고: ${esc(SITE.mailOrder)}<br>주소: ${esc(SITE.addr)} · 개인정보보호책임자: ${esc(SITE.privacyOfficer)}<br>`;
+}
 
 /* =========================================================
    MEMBERSHIP SECTION + CALCULATOR
@@ -1226,7 +1579,7 @@ function renderAdmin() {
       <div id="admErr" style="color:var(--red);font-size:12px;margin-bottom:12px"></div><button class="btn btn-gold btn-block" type="submit">확인</button></form>`;
     return;
   }
-  const tabs = [['products', '상품 표'], ['inventory', '재고 표'], ['log', '입출고 기록']];
+  const tabs = [['products', '상품 표'], ['inventory', '재고 표'], ['orders', '주문 관리'], ['log', '입출고 기록']];
   let body = '', bar = '';
   if (admTab === 'products') {
     body = `<table class="tbl"><thead><tr><th>상품ID</th><th>브랜드</th><th>모델</th><th>컬러</th><th>발매가</th><th>기준 판매가</th><th>한정 수량</th><th>발매년</th><th>총 재고</th><th>상태</th></tr></thead><tbody>${PRODUCTS.map(p => { const t = totalStock(p); return `<tr><td class="num">${p.id}</td><td>${p.brand}</td><td>${esc(p.name)}</td><td>${esc(p.cw)}</td><td class="num">${won(p.retail)}</td><td class="num">${won(p.price)}</td><td class="num">${p.qty.toLocaleString()}</td><td class="num">${p.year}</td><td class="num"><b>${t}</b></td><td>${stBadge(t)}</td></tr>`; }).join('')}</tbody></table>`;
@@ -1238,11 +1591,16 @@ function renderAdmin() {
     bar = `<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><select class="field" id="admFilter" aria-label="상품 필터" style="min-height:44px"><option value="all">전체 상품</option>${PRODUCTS.map(p => `<option value="${p.id}"${admFilter === p.id ? ' selected' : ''}>${p.id} · ${esc(pname(p))}</option>`).join('')}</select><span style="color:var(--mute);font-size:13px">${rows.length}건</span></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" data-csv="inventory">CSV 내려받기</button><button class="btn btn-ghost btn-sm" id="admReset">${admResetArmed ? '한 번 더 누르면 초기화됩니다' : '재고 초기화'}</button><button class="btn btn-gold btn-sm" id="admSave">변경 저장</button></div>`;
   }
+  if (admTab === 'orders') {
+    const list = allOrders().sort((a, b) => b.o.id.localeCompare(a.o.id)), open = list.filter(x => [ST.WAIT, ST.INSP, ST.PASS, ST.SHIP].includes(x.o.status)).length;
+    body = list.length ? `<table class="tbl"><thead><tr><th>주문번호</th><th>고객</th><th>상품</th><th>결제</th><th>상태</th><th>처리</th></tr></thead><tbody>${list.map(({ u, o }) => `<tr><td class="num">${o.id}<br><small style="color:var(--mute)">${o.d}</small></td><td>${esc(u.name)}<br><small style="color:var(--mute)">${esc(u.email)}</small></td><td>${o.items.map(i => `${esc(pname(byId(i.id)))} (${i.size})`).join('<br>')}</td><td class="num">${won(o.pay)}</td><td><span class="stat ${statCls(o.status)}">${o.status}</span></td><td>${admActions(o)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">아직 주문이 없습니다.<br>쇼핑몰에서 주문하면 여기에 나타납니다.</div>';
+    bar = `<span style="color:var(--mute);font-size:13px">주문 ${list.length}건 · 처리 필요 ${open}건</span><span style="color:var(--dim);font-size:12px">이 브라우저에 저장된 주문만 보입니다</span>`;
+  }
   if (admTab === 'log') {
     body = stockLog.length ? `<table class="tbl"><thead><tr><th>일시</th><th>SKU</th><th>구분</th><th>증감</th><th>비고</th></tr></thead><tbody>${stockLog.slice(0, 200).map(l => `<tr><td class="num">${l.t}</td><td class="num">${l.sku}</td><td>${l.type}</td><td class="num ${l.delta > 0 ? 'plus' : 'minus'}">${l.delta > 0 ? '+' : ''}${l.delta}</td><td>${esc(l.note || '')}</td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">아직 입출고 기록이 없습니다.<br>주문이 들어오거나 재고를 수정하면 여기에 쌓입니다.</div>';
     bar = `<span style="color:var(--mute);font-size:13px">최근 ${Math.min(stockLog.length, 200)}건</span><button class="btn btn-ghost btn-sm" data-csv="log">CSV 내려받기</button>`;
   }
-  box.innerHTML = `<h2 class="m-title">재고 관리</h2><p class="m-sub">상품 표와 재고 표를 나눠 관리합니다.</p>
+  box.innerHTML = `<h2 class="m-title">재고·주문 관리</h2><p class="m-sub">상품 표와 재고 표를 나눠 관리하고, 주문의 검수·배송 상태를 바꿉니다.</p>
     <div class="adm-note">상품 표 <b>1건</b> → 재고 표 <b>사이즈 수(${SIZES.length})건</b>. 두 표는 <b>상품ID</b>로 연결되고, 재고 표의 기본키는 <b>SKU(상품ID-사이즈)</b>입니다.</div>
     <div class="tabs">${tabs.map(([k, v]) => `<button data-adm="${k}" class="${admTab === k ? 'on' : ''}">${v}</button>`).join('')}</div>
     <div class="adm-bar">${bar}</div><div class="adm-wrap">${body}</div>`;
@@ -1259,7 +1617,27 @@ $('#admBody').addEventListener('submit', e => {
   else $('#admErr').textContent = '비밀번호가 맞지 않습니다.';
 });
 $('#admBody').addEventListener('change', e => { if (e.target.id === 'admFilter') { admFilter = e.target.value; renderAdmin(); } });
+const admActions = o => {
+  const id = o.id;
+  if (o.status === ST.WAIT) return `<button class="btn btn-ghost btn-sm" data-oact="start" data-o="${id}">검수 시작</button>`;
+  if (o.status === ST.INSP) return `<div style="display:grid;gap:6px;min-width:210px"><select class="field adm-grade" data-o="${id}">${Object.keys(GRADE).map(g => `<option value="${g}">상태 ${g}등급</option>`).join('')}</select><input class="adm-in" style="width:100%" id="note-${id}" placeholder="검수 메모(선택)"><div style="display:flex;gap:6px"><button class="btn btn-gold btn-sm" data-oact="pass" data-o="${id}">합격</button><button class="btn btn-ghost btn-sm" data-oact="fail" data-o="${id}">불합격(환불)</button></div></div>`;
+  if (o.status === ST.PASS) return `<div style="display:grid;gap:6px;min-width:170px"><select class="field adm-courier" data-o="${id}"><option>CJ대한통운</option><option>한진택배</option><option>롯데택배</option><option>우체국택배</option></select><button class="btn btn-gold btn-sm" data-oact="ship" data-o="${id}">배송 시작</button></div>`;
+  if (o.status === ST.SHIP) return `<button class="btn btn-gold btn-sm" data-oact="done" data-o="${id}">배송 완료 처리</button>`;
+  return '<span style="color:var(--dim)">—</span>';
+};
+function admOrderAct(act, id) {
+  const f = allOrders().find(x => x.o.id === id); if (!f) return; const { u, o } = f;
+  const note = (($(`#note-${id}`) || {}).value || '').trim();
+  if (act === 'start') pushHist(o, ST.INSP);
+  if (act === 'pass') { const g = $(`.adm-grade[data-o="${id}"]`).value; o.insp = { result: '합격', grade: g, note, t: stamp() }; pushHist(o, ST.PASS, `정품 확인 · 상태 ${g}등급`); }
+  if (act === 'fail') { o.insp = { result: '불합격', note: note || '정품 여부 또는 상태 기준에 맞지 않습니다.', t: stamp() }; refundOrder(u, o, '검수 불합격', ST.REFUND); }
+  if (act === 'ship') { const c = $(`.adm-courier[data-o="${id}"]`).value; o.track = { courier: c, no: String(Math.floor(1e11 + Math.random() * 9e11)) }; pushHist(o, ST.SHIP, `${c} ${o.track.no}`); }
+  if (act === 'done') pushHist(o, ST.DONE);
+  ensureLots(u); saveUsers(); saveInventory(); renderAdmin(); refreshViews();
+  toast(`<b>${o.id}</b> → ${o.status}`);
+}
 $('#admBody').addEventListener('click', e => {
+  const oa = e.target.closest('[data-oact]'); if (oa) return admOrderAct(oa.dataset.oact, oa.dataset.o);
   const t = e.target.closest('[data-adm]'); if (t) { admTab = t.dataset.adm; admResetArmed = false; return renderAdmin(); }
   const c = e.target.closest('[data-csv]');
   if (c) {
@@ -1295,7 +1673,8 @@ $('#admBody').addEventListener('click', e => {
    INIT
    ========================================================= */
 function renderAll() {
-  renderAuthArea(); renderGrid(); renderCart(); renderTiers();
+  const cu = me(); if (cu) { ensureLots(cu); expireLots(cu); saveUsers(); }
+  renderFooterInfo(); renderAuthArea(); renderGrid(); renderCart(); renderTiers();
   const u = me(); const nb = $('#notifyBtn'); nb.disabled = !!(u && u.notify); nb.textContent = u && u.notify ? '알림 신청 완료' : '입고 알림 받기';
 }
 if (sessionEmail && !users[sessionEmail]) { sessionEmail = null; LS.set('gs_session', null); }
