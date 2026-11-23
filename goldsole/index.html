@@ -522,7 +522,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
 <!-- ========== HERO ========== -->
 <section class="hero" id="hero" aria-roledescription="carousel" aria-label="주요 소개">
   <div class="slide on" data-i="0">
-    <img src="img/hero1.png" alt="블랙과 골드 컬러의 한정판 하이탑 스니커">
+    <img src="img/hero1.png" alt="블랙과 옐로 컬러의 한정판 로우탑 스니커">
     <div class="copy">
       <span class="tag">한정판 스니커 리셀</span>
       <h1>단 한 켤레의 가치,<br>검수로 증명합니다</h1>
@@ -540,7 +540,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
     </div>
   </div>
   <div class="slide" data-i="2">
-    <img src="img/hero3.png" alt="화이트와 골드 컬러의 로우탑 스니커" loading="lazy">
+    <img src="img/hero3.png" alt="모카 브라운과 크림 컬러의 로우탑 스니커" loading="lazy">
     <div class="copy">
       <span class="tag">멤버십 포인트</span>
       <h2>구매할수록<br>적립률이 올라갑니다</h2>
@@ -600,10 +600,10 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
 <!-- ========== DROP ========== -->
 <section class="sec drop" id="drop">
   <div class="wrap">
-    <div class="drop-img"><img src="img/drop.png" alt="미드나잇 크라운 하이탑 스니커" loading="lazy"><span class="stamp">입고 예정</span></div>
+    <div class="drop-img"><img src="img/drop.png" alt="네이비와 옐로 컬러의 로우탑 스니커" loading="lazy"><span class="stamp">입고 예정</span></div>
     <div>
       <div class="gold-rule"></div>
-      <h2>AERO Hi-1 ‘미드나잇 크라운’<br>다음 입고까지</h2>
+      <h2>AERO Lo-1 ‘미드나잇 옐로’<br>다음 입고까지</h2>
       <p>입고 알림을 신청하면 판매가 시작되는 순간 알려드립니다. 상위 등급 회원은 더 일찍 입장할 수 있습니다.</p>
       <div class="timer" role="timer" aria-live="off">
         <div><b id="tD">00</b><span>일</span></div><div><b id="tH">00</b><span>시간</span></div><div><b id="tM">00</b><span>분</span></div><div><b id="tS">00</b><span>초</span></div>
@@ -827,8 +827,8 @@ const tierOf = spent => [...TIERS].reverse().find(t => spent >= t.min);
 const nextTier = t => TIERS[TIERS.indexOf(t) + 1];
 
 /* ---------- 사업자·정책 정보 (여기만 고치면 푸터와 약관 문구에 반영됩니다) ---------- */
-const SITE = { name:'GOLDSOLE', company:'(입력 필요)', ceo:'(입력 필요)', biz:'000-00-00000', mailOrder:'제0000-서울○○-0000호',
-  addr:'(입력 필요)', tel:'000-0000-0000', email:'help@example.com', hours:'평일 10:00–18:00 (점심 12:30–13:30)',
+const SITE = { name:'GOLDSOLE', company:'GOLDSOLE', ceo:'이정헌', biz:'000-00-00000', mailOrder:'제0000-서울○○-0000호',
+  addr:'한국기술교육대학교', tel:'000-0000-0000', email:'help@example.com', hours:'평일 10:00–18:00 (점심 12:30–13:30)',
   privacyOfficer:'(입력 필요)', effective:'2026년 11월 23일' };
 const POINT_EXP_DAYS = 365, SIGNUP_EXP_DAYS = 90, REVIEW_REWARD = 500;
 const WELCOME_COUPON = { name:'신규 가입 10,000원 할인', value:10000, min:300000, days:30 };
@@ -837,17 +837,17 @@ const WELCOME_COUPON = { name:'신규 가입 10,000원 할인', value:10000, min
 const SIZES = [230,235,240,245,250,255,260,265,270,275,280,285,290];
 const SIZE_OFF = {230:-.05,235:-.04,240:-.03,245:-.02,250:-.01,255:-.005,260:0,265:.01,270:.02,275:.03,280:.04,285:.055,290:.07};
 const PRODUCTS = [
-  {id:'p01',brand:'AERO',   name:'Hi-1',    cw:'오브시디언 골드',  price:1290000, retail:289000, qty:300, year:2025, out:[230], seed:3},
-  {id:'p02',brand:'AERO',   name:'Hi-1',    cw:'크림슨 코트',      price:890000,  retail:259000, qty:800, year:2024, out:[290], seed:5},
+  {id:'p01',brand:'AERO',   name:'Lo-1',    cw:'블랙 옐로',  price:1290000, retail:289000, qty:300, year:2025, out:[230], seed:3},
+  {id:'p02',brand:'AERO',   name:'Lo-1',    cw:'크림슨 코트',      price:890000,  retail:259000, qty:800, year:2024, out:[290], seed:5},
   {id:'p03',brand:'KINETIC',name:'Pulse',   cw:'코발트 펄스',      price:540000,  retail:219000, qty:1500,year:2025, out:[], seed:8},
-  {id:'p04',brand:'NOVA',   name:'Grove',   cw:'파인 앤 골드',     price:420000,  retail:199000, qty:2000,year:2025, out:[240,250], seed:2},
-  {id:'p05',brand:'VOLT',   name:'Dune',    cw:'샌드 듄',          price:380000,  retail:179000, qty:3000,year:2024, out:[], seed:6},
+  {id:'p04',brand:'NOVA',   name:'Grove',   cw:'포레스트 크림',     price:420000,  retail:199000, qty:2000,year:2025, out:[240,250], seed:2},
+  {id:'p05',brand:'VOLT',   name:'Dune',    cw:'모카 크림',          price:380000,  retail:179000, qty:3000,year:2024, out:[], seed:6},
   {id:'p06',brand:'KINETIC',name:'Pulse',   cw:'로열 퍼플',        price:610000,  retail:219000, qty:1000,year:2025, out:[260,270], seed:9},
-  {id:'p07',brand:'AERO',   name:'Low',     cw:'아틱 골드',        price:460000,  retail:199000, qty:2500,year:2025, out:[], seed:4},
-  {id:'p08',brand:'VOLT',   name:'Blaze',   cw:'솔라 오렌지',      price:350000,  retail:189000, qty:3500,year:2023, out:[290], seed:7},
-  {id:'p09',brand:'NOVA',   name:'Shadow',  cw:'스모크 그레이',    price:330000,  retail:169000, qty:5000,year:2023, out:SIZES, seed:1},
-  {id:'p10',brand:'NOVA',   name:'Bloom',   cw:'체리 블룸',        price:520000,  retail:189000, qty:1200,year:2025, out:[230,280], seed:10},
-  {id:'p11',brand:'AERO',   name:'Hi-1',    cw:'미드나잇 크라운',  price:1650000, retail:309000, qty:150, year:2025, out:[230,240,290], seed:11},
+  {id:'p07',brand:'AERO',   name:'Classic',     cw:'에스프레소 크림',        price:460000,  retail:199000, qty:2500,year:2025, out:[], seed:4},
+  {id:'p08',brand:'VOLT',   name:'Blaze',   cw:'블랙 오렌지',      price:350000,  retail:189000, qty:3500,year:2023, out:[290], seed:7},
+  {id:'p09',brand:'NOVA',   name:'Stride',  cw:'버건디 샌드',    price:330000,  retail:169000, qty:5000,year:2023, out:SIZES, seed:1},
+  {id:'p10',brand:'NOVA',   name:'Bloom',   cw:'로즈 핑크',        price:520000,  retail:189000, qty:1200,year:2025, out:[230,280], seed:10},
+  {id:'p11',brand:'AERO',   name:'Lo-1',    cw:'미드나잇 옐로',  price:1650000, retail:309000, qty:150, year:2025, out:[230,240,290], seed:11},
   {id:'p12',brand:'KINETIC',name:'Chrome',  cw:'크롬 실버',        price:720000,  retail:239000, qty:700, year:2024, out:[250], seed:12},
 ];
 /* 최근 거래가 (예시: id 기반으로 고정 생성) */
@@ -862,18 +862,18 @@ const byId = id => PRODUCTS.find(p => p.id === id);
 const pname = p => `${p.brand} ${p.name} ‘${p.cw}’`;
 /* 상품 상세 설명 (상품 표의 부가 정보) */
 const INFO = {
-  p01:{mat:'프리미엄 가죽 · 골드 메탈릭 패널', sole:'쿠션 미드솔 · 고무 아웃솔', story:'블랙 바탕에 골드 포인트를 더한 시그니처 컬러입니다. 발매 직후 품절된 대표 모델입니다.'},
-  p02:{mat:'가죽 · 레드 오버레이', sole:'쿠션 미드솔 · 고무 아웃솔', story:'화이트와 레드의 대비가 강한 코트 스타일입니다. 클래식한 실루엣으로 꾸준히 거래됩니다.'},
-  p03:{mat:'니트 · 합성 가죽', sole:'경량 미드솔 · 그립 아웃솔', story:'선명한 코발트 컬러에 옐로 포인트를 더한 퍼포먼스 스타일입니다.'},
-  p04:{mat:'스웨이드 · 가죽', sole:'고무 아웃솔', story:'짙은 그린과 골드 디테일이 어우러진 시즌 한정 컬러입니다.'},
-  p05:{mat:'스웨이드 · 메쉬', sole:'크림 미드솔 · 고무 아웃솔', story:'모래빛 톤으로 어떤 코디에도 무난하게 어울리는 데일리 모델입니다.'},
-  p06:{mat:'니트 · 합성 가죽', sole:'경량 미드솔 · 그립 아웃솔', story:'깊은 퍼플에 골드 포인트를 더한 컬러로 수집가들이 찾는 모델입니다.'},
-  p07:{mat:'가죽 · 골드 디테일', sole:'쿠션 미드솔 · 고무 아웃솔', story:'화이트 베이스에 골드 포인트를 더한 로우탑 모델로 깔끔한 룩에 어울립니다.'},
-  p08:{mat:'합성 가죽 · 메쉬', sole:'경량 미드솔 · 그립 아웃솔', story:'선명한 오렌지 컬러가 눈에 띄는 한정 모델입니다.'},
-  p09:{mat:'스웨이드 · 가죽', sole:'고무 아웃솔', story:'차분한 그레이 톤에 레드 포인트를 더한 컬러웨이입니다.'},
-  p10:{mat:'가죽 · 골드 디테일', sole:'쿠션 미드솔 · 고무 아웃솔', story:'은은한 핑크에 골드 포인트를 더한 시즌 컬러입니다.'},
-  p11:{mat:'프리미엄 가죽 · 골드 메탈릭 패널', sole:'쿠션 미드솔 · 고무 아웃솔', story:'네이비 바탕에 골드 패널을 얹은 최소 수량 모델입니다.'},
-  p12:{mat:'합성 가죽 · 메탈릭 패널', sole:'경량 미드솔 · 그립 아웃솔', story:'크롬 느낌의 실버 컬러로 미래적인 분위기를 냅니다.'},
+  p01:{mat:'프리미엄 가죽 · 옐로 스웨이드 패널', sole:'크림 미드솔 · 블랙 아웃솔', story:'블랙 가죽에 옐로 스웨이드와 옐로 레이스를 더한 로우탑입니다. 선명한 두 가지 색 대비로 가장 먼저 품절됩니다.'},
+  p02:{mat:'가죽 · 레드 오버레이', sole:'크림 미드솔 · 블랙 아웃솔', story:'레드와 화이트, 블랙의 대비가 강한 코트 스타일입니다. 클래식한 실루엣으로 꾸준히 거래됩니다.'},
+  p03:{mat:'스웨이드 · 가죽, 스트랩 디테일', sole:'크림 미드솔 · 블루 아웃솔', story:'코발트 블루와 화이트가 어우러진 하이탑입니다. 발목 스트랩이 포인트입니다.'},
+  p04:{mat:'가죽 · 스웨이드', sole:'크림 미드솔 · 갈색 고무 아웃솔', story:'짙은 포레스트 그린과 크림 컬러를 맞춘 차분한 모델입니다. 갈색 아웃솔이 빈티지한 느낌을 줍니다.'},
+  p05:{mat:'가죽 · 스웨이드', sole:'크림 미드솔 · 갈색 고무 아웃솔', story:'모카 브라운과 크림을 맞춘 데일리 모델입니다. 어떤 코디에도 무난하게 어울립니다.'},
+  p06:{mat:'스웨이드 · 가죽', sole:'화이트 미드솔 · 퍼플 아웃솔', story:'진한 퍼플에 라벤더를 더한 컬러로 수집가들이 찾는 모델입니다.'},
+  p07:{mat:'가죽 · 스웨이드', sole:'크림 미드솔 · 갈색 고무 아웃솔', story:'에스프레소 브라운과 크림을 맞춘 클래식 로우탑입니다. 깔끔한 룩에 어울립니다.'},
+  p08:{mat:'가죽 · 합성 가죽', sole:'크림 미드솔 · 블랙 아웃솔', story:'블랙과 선명한 오렌지가 만나는 한정 컬러입니다.'},
+  p09:{mat:'메쉬 · 합성 가죽 · 스웨이드', sole:'두꺼운 쿠션 솔 · 블랙 그립 아웃솔', story:'버건디와 샌드 톤을 쓴 러닝 스타일입니다. 두툼한 밑창으로 편안하게 신을 수 있습니다.'},
+  p10:{mat:'스웨이드 · 가죽', sole:'화이트 미드솔 · 핑크 아웃솔', story:'은은한 로즈 핑크와 크림을 맞춘 시즌 컬러입니다.'},
+  p11:{mat:'프리미엄 가죽 · 옐로 스웨이드 패널', sole:'크림 미드솔 · 네이비 아웃솔', story:'네이비 가죽에 옐로 스웨이드를 얹은 최소 수량 모델입니다.'},
+  p12:{mat:'메탈릭 합성 가죽', sole:'화이트 미드솔 · 화이트 아웃솔', story:'은빛 메탈릭 소재로 미래적인 분위기를 냅니다.'},
 };
 const infoOf = p => ({ ...(INFO[p.id] || {}), code: 'GS-' + p.id.toUpperCase() });
 const SIZE_MAP = {230:['5','4','37.5'],235:['5.5','4.5','38'],240:['6','5','38.5'],245:['6.5','5.5','39'],250:['7','6','40'],255:['7.5','6.5','40.5'],260:['8','7','41'],265:['8.5','7.5','42'],270:['9','8','42.5'],275:['9.5','8.5','43'],280:['10','9','44'],285:['10.5','9.5','44.5'],290:['11','10','45']};
