@@ -861,6 +861,9 @@ PRODUCTS.forEach((p, i) => {
   p.pop = 100 - i * 3 + (p.seed % 4) * 5;
 });
 const byId = id => PRODUCTS.find(p => p.id === id);
+/* 목록·상세 사진은 모두 신발코가 왼쪽을 향하도록 맞춤 (원본이 오른쪽인 모델은 좌우 반전한 파일 사용) */
+const FLIPPED = new Set(['p01', 'p11']);
+const imgOf = id => `img/${id}${FLIPPED.has(id) ? '_left' : ''}.png`;
 const pname = p => `${p.brand} ${p.name} ‘${p.cw}’`;
 /* 상품 상세 설명 (상품 표의 부가 정보) */
 const INFO = {
@@ -1140,7 +1143,7 @@ function renderGrid() {
     const so = soldOut(p), ts = totalStock(p), w = u && u.wish.includes(p.id), up = p.change >= 0;
     return `<article class="card">
       <div class="thumb" data-view="${p.id}" tabindex="0" role="button" aria-label="${esc(pname(p))} 상세 보기">
-        <img src="img/${p.id}.png" alt="${esc(pname(p))}" loading="lazy">
+        <img src="${imgOf(p.id)}" alt="${esc(pname(p))}" loading="lazy">
         <div class="tags"><span class="tag-s">한정 ${p.qty.toLocaleString()}켤레</span>${so?'<span class="tag-s out">품절</span>':ts<=5?`<span class="tag-s hot">잔여 ${ts}켤레</span>`:p.change>8?'<span class="tag-s hot">급상승</span>':''}</div>
       </div>
       <button class="wish${w?' on':''}" data-wish="${p.id}" aria-label="찜하기" aria-pressed="${!!w}">${heart}</button>
@@ -1195,7 +1198,7 @@ function renderProduct() {
        <table class="spec"><tr><th>브랜드</th><td>${p.brand}</td></tr><tr><th>모델 · 컬러</th><td>${esc(p.name)} · ${esc(p.cw)}</td></tr><tr><th>소재</th><td>${esc(inf.mat || '-')}</td></tr><tr><th>밑창</th><td>${esc(inf.sole || '-')}</td></tr><tr><th>발매</th><td>${p.year}년 · 발매가 ${won(p.retail)} · 한정 ${p.qty.toLocaleString()}켤레</td></tr><tr><th>스타일 코드</th><td class="num">${inf.code}</td></tr><tr><th>검수 기준</th><td>소재·봉제·라벨·박스 정보를 대조한 뒤 상태 등급(S/A/B)을 부여합니다.</td></tr></table>`
     : pdTab === 'trade' ? tradeTab(p) : reviewTab(p);
   $('#pdBody').innerHTML = `
-    <div class="pd-img"><img src="img/${p.id}.png" alt="${esc(pname(p))}"></div>
+    <div class="pd-img"><img src="${imgOf(p.id)}" alt="${esc(pname(p))}"></div>
     <div class="pd-body">
       <span class="brand">${p.brand}</span>
       <h2>${esc(p.name)} ‘${esc(p.cw)}’</h2>
@@ -1262,7 +1265,7 @@ function renderCart() {
   $('#cartCount').textContent = cart.length || ''; $('#cartCount').dataset.n = cart.length;
   const list = $('#cartList'), foot = $('#cartFoot');
   if (!cart.length) { list.innerHTML = '<div class="empty-s"><b style="display:block;color:var(--ink);font-size:17px;margin-bottom:6px">장바구니가 비어 있습니다</b>마음에 드는 한정판을 담아보세요.</div>'; foot.innerHTML = '<a class="btn btn-gold btn-block" href="#shop" id="goShop">상품 보러 가기</a>'; return; }
-  list.innerHTML = cart.map((c, i) => { const p = byId(c.id); return `<div class="cart-item"><img src="img/${p.id}.png" alt=""><div><h4>${esc(pname(p))}</h4><small>사이즈 ${c.size}mm${sizeStock(c.id, c.size) < 1 ? ' · <b style="color:var(--red)">품절</b>' : ''}</small><div class="p num">${won(sizePrice(p, c.size))}</div></div><button class="rm" data-rm="${i}" aria-label="삭제"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`; }).join('');
+  list.innerHTML = cart.map((c, i) => { const p = byId(c.id); return `<div class="cart-item"><img src="${imgOf(p.id)}" alt=""><div><h4>${esc(pname(p))}</h4><small>사이즈 ${c.size}mm${sizeStock(c.id, c.size) < 1 ? ' · <b style="color:var(--red)">품절</b>' : ''}</small><div class="p num">${won(sizePrice(p, c.size))}</div></div><button class="rm" data-rm="${i}" aria-label="삭제"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`; }).join('');
   const k = calc();
   foot.innerHTML = `<div class="sum-row"><span>상품 금액</span><span class="num">${won(k.sub)}</span></div>
     <div class="sum-row"><span>배송비</span><span class="num">${k.ship ? won(k.ship) : '무료'}</span></div>
@@ -1289,7 +1292,7 @@ function startCheckout() {
   const u = me(); closeM('m-cart');
   $('#cName').value = $('#cName').value || u.name; $('#cPhone').value = $('#cPhone').value || u.phone;
   $('#usePt').value = ''; $('#cAgree').checked = false; $('#coMsg').hidden = true; fillCoupons();
-  $('#coItems').innerHTML = cart.map(c => { const p = byId(c.id); return `<div class="co-item"><img src="img/${p.id}.png" alt=""><div>${esc(pname(p))}<br><span style="color:var(--mute)">${c.size}mm</span></div><b class="num">${won(sizePrice(p, c.size))}</b></div>`; }).join('');
+  $('#coItems').innerHTML = cart.map(c => { const p = byId(c.id); return `<div class="co-item"><img src="${imgOf(p.id)}" alt=""><div>${esc(pname(p))}<br><span style="color:var(--mute)">${c.size}mm</span></div><b class="num">${won(sizePrice(p, c.size))}</b></div>`; }).join('');
   updateCo(); openM('m-checkout');
 }
 function useVal() { return parseInt(($('#usePt').value || '0').replace(/\D/g, ''), 10) || 0; }
@@ -1400,7 +1403,7 @@ function renderMy() {
   if (myTab === 'points') body = `<p class="note" style="margin:6px 0 14px">${soon ? `<b style="color:var(--gold2)">30일 안에 ${pts(soon)}</b>가 소멸돼요. ` : ''}포인트 유효기간은 구매 적립 ${POINT_EXP_DAYS / 365}년, 가입 포인트 ${SIGNUP_EXP_DAYS / 30}개월이에요. 오래된 포인트부터 먼저 사용돼요.</p>` + (u.history.length ? `<table class="tbl"><thead><tr><th>일자</th><th>구분</th><th>내용</th><th>유효기간</th><th>포인트</th></tr></thead><tbody>${u.history.map(h => `<tr><td class="num">${h.d}</td><td>${h.type}</td><td>${esc(h.desc)}</td><td class="num">${h.exp ? '~' + h.exp : '—'}</td><td class="num ${h.amt>0?'plus':'minus'}">${h.amt>0?'+':''}${h.amt.toLocaleString()}P</td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">포인트 내역이 없습니다.</div>');
   if (myTab === 'orders') body = u.orders.length ? `<table class="tbl"><thead><tr><th>주문</th><th>상품</th><th>상태</th><th>결제</th><th></th></tr></thead><tbody>${u.orders.map(o => `<tr><td class="num">${o.id}<br><small style="color:var(--mute)">${o.d}</small></td><td>${o.items.map(i => `${esc(pname(byId(i.id)))} (${i.size})`).join('<br>')}</td><td><span class="stat ${statCls(o.status)}">${o.status}</span></td><td class="num">${won(o.pay)}<br><small class="earn">${[ST.CANCEL, ST.REFUND].includes(o.status) ? '환불' : '+' + pts(o.earn)}</small></td><td><button class="btn btn-ghost btn-sm" data-order="${o.id}">상세</button></td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">아직 주문 내역이 없습니다.<br>첫 구매 시 ' + TIERS[0].rate + '% 포인트가 적립됩니다.</div>';
   if (myTab === 'coupons') body = (u.coupons || []).length ? [...u.coupons].reverse().map(c => { const off = c.used || c.exp < nowIso(); return `<div class="cp${off ? ' off' : ''}"><div><b>${won(c.value)} 할인</b><small>${esc(c.name)} · ${won(c.min)} 이상 주문 시</small></div><div style="text-align:right;font-size:13px">${c.used ? '사용 완료' : c.exp < nowIso() ? '기간 만료' : '~' + c.exp + '까지'}</div></div>`; }).join('') : '<div class="empty-s">보유한 쿠폰이 없습니다.</div>';
-  if (myTab === 'wish') body = u.wish.length ? `<div class="mini-grid">${u.wish.map(id => { const p = byId(id); return `<div class="mini" data-mv="${id}"><img src="img/${id}.png" alt=""><div>${esc(pname(p))}<br><b class="num">${won(p.price)}</b></div></div>`; }).join('')}</div>` : '<div class="empty-s">찜한 상품이 없습니다.</div>';
+  if (myTab === 'wish') body = u.wish.length ? `<div class="mini-grid">${u.wish.map(id => { const p = byId(id); return `<div class="mini" data-mv="${id}"><img src="${imgOf(id)}" alt=""><div>${esc(pname(p))}<br><b class="num">${won(p.price)}</b></div></div>`; }).join('')}</div>` : '<div class="empty-s">찜한 상품이 없습니다.</div>';
   $('#myBody').innerHTML = `<div class="my-head">
       <div class="my-top"><div><span class="tier-pill">${medalDot(t)} ${t.name}</span><h3>${esc(u.name)}님의 멤버십</h3></div><button class="btn btn-ghost btn-sm" id="logoutBtn">로그아웃</button></div>
       <div class="my-stats"><div><small>보유 포인트</small><b class="num earn">${pts(u.points)}</b></div><div><small>현재 적립률 · 쿠폰</small><b>${t.rate}% · ${cps.length}장</b></div><div><small>누적 구매금액</small><b class="num">${won(u.spent)}</b></div></div>
@@ -1434,7 +1437,7 @@ function orderHtml(o) {
     const hh = o.hist || [], st = hh.find(x => x.s === ST.SHIP), dn = hh.find(x => x.s === ST.DONE);
     h += `<div class="box"><h4>배송 조회</h4><dl class="od-grid"><dt>택배사</dt><dd>${o.track.courier}</dd><dt>송장번호</dt><dd class="num">${o.track.no}</dd></dl><ul class="tl" style="margin-top:14px"><li class="on">집화 · 상품 인수<small>${st ? st.t : ''}</small></li><li class="${dn ? 'on' : ''}">${dn ? '배송 완료' : '배송 중'}<small>${dn ? dn.t : '곧 도착해요'}</small></li></ul></div>`;
   }
-  h += `<div class="box"><h4>주문 상품</h4>${o.items.map(i => { const p = byId(i.id), key = `${i.id}-${i.size}`, done = (o.reviewed || {})[key]; return `<div class="co-item" style="align-items:center"><img src="img/${p.id}.png" alt=""><div>${esc(pname(p))}<br><span style="color:var(--mute)">${i.size}mm · ${won(i.price)}</span></div>${o.status === ST.DONE ? (done ? '<span class="stat s-pass">리뷰 작성 완료</span>' : `<button class="btn btn-ghost btn-sm" data-rv="${o.id}|${key}">리뷰 +${REVIEW_REWARD}P</button>`) : ''}</div>`; }).join('')}</div>`;
+  h += `<div class="box"><h4>주문 상품</h4>${o.items.map(i => { const p = byId(i.id), key = `${i.id}-${i.size}`, done = (o.reviewed || {})[key]; return `<div class="co-item" style="align-items:center"><img src="${imgOf(p.id)}" alt=""><div>${esc(pname(p))}<br><span style="color:var(--mute)">${i.size}mm · ${won(i.price)}</span></div>${o.status === ST.DONE ? (done ? '<span class="stat s-pass">리뷰 작성 완료</span>' : `<button class="btn btn-ghost btn-sm" data-rv="${o.id}|${key}">리뷰 +${REVIEW_REWARD}P</button>`) : ''}</div>`; }).join('')}</div>`;
   h += `<div class="box"><h4>결제 정보</h4><dl class="od-grid"><dt>결제수단</dt><dd>${o.method}</dd><dt>상품 금액</dt><dd class="num">${won(o.sub)}</dd>${cd ? `<dt>쿠폰 할인</dt><dd class="num">-${won(cd)}</dd>` : ''}${o.use ? `<dt>포인트 사용</dt><dd class="num">-${won(o.use)}</dd>` : ''}<dt>배송비</dt><dd class="num">${o.ship ? won(o.ship) : '무료'}</dd><dt>결제 금액</dt><dd class="num"><b>${won(o.pay)}</b></dd><dt>적립 포인트</dt><dd class="num">${fin ? '회수됨' : '+' + pts(o.earn)}</dd></dl></div>`;
   if (o.refund) h += `<div class="box bad"><h4>${o.status} · ${esc(o.refund.reason)}</h4><dl class="od-grid"><dt>환불 금액</dt><dd class="num">${won(o.refund.amt)}</dd><dt>사용 포인트 복원</dt><dd class="num">${o.refund.back ? '+' + pts(o.refund.back) : '—'}</dd><dt>적립 포인트 회수</dt><dd class="num">${o.refund.revoked ? '-' + pts(o.refund.revoked) : '—'}</dd><dt>처리 일시</dt><dd class="num">${o.refund.t}</dd></dl><p style="color:var(--mute);margin-top:8px">결제수단 환불은 카드사·결제사에 따라 영업일 기준 3~5일이 걸릴 수 있어요.</p></div>`;
   h += `<div class="box"><h4>배송지</h4><p>${esc(o.to.name)}<br>${esc(o.to.addr)}</p></div>`;
