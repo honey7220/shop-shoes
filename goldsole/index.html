@@ -191,7 +191,7 @@ select.field{appearance:none;padding-right:34px;background-image:url("data:image
 
 /* ========== Membership ========== */
 .member{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.tiers{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--line2)}
+.tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line2)}
 .tier{padding:34px 24px 30px;border-right:1px solid var(--line2);position:relative;background:var(--bg);transition:background .25s}
 .tier:last-child{border-right:0}
 .tier:hover{background:var(--card2)}
@@ -546,7 +546,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
     <div class="copy">
       <span class="tag">멤버십 포인트</span>
       <h2>구매할수록<br>적립률이 올라갑니다</h2>
-      <p>누적 구매금액에 따라 5개 등급, 최대 12% 적립. 가입하면 3,000P를 바로 드립니다.</p>
+      <p>누적 구매금액에 따라 4개 등급, 최대 12% 적립. 가입하면 3,000P를 바로 드립니다.</p>
       <div class="cta"><button class="btn btn-gold" data-open="signup">3,000P 받고 가입</button><a class="btn btn-line" href="#member">등급 혜택 보기</a></div>
     </div>
   </div>
@@ -757,7 +757,7 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
       <aside class="co-side">
         <h3>주문 상품</h3>
         <div id="coItems"></div>
-        <h3 style="margin-top:22px">쿠폰</h3>
+        <h3 style="margin-top:22px" id="couponH">쿠폰</h3>
         <select class="field" id="cCoupon" aria-label="쿠폰 선택" style="width:100%"></select>
         <h3 style="margin-top:22px">포인트 사용</h3>
         <div class="pt-row"><input class="field num" id="usePt" inputmode="numeric" placeholder="0" aria-label="사용할 포인트"><button type="button" class="btn btn-ghost btn-sm" id="useAll">전액 사용</button></div>
@@ -802,13 +802,15 @@ footer{background:#000;border-top:1px solid var(--line);padding:64px 0 40px;colo
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ---------- Supabase 연결 ----------
-   아래 두 값을 본인 프로젝트 값으로 바꾸세요 (Settings → API → Project URL / Publishable key).
-   공개(publishable/anon) 키만 넣습니다. service_role 키와 DB 비밀번호는 절대 넣지 마세요. */
+   · 표: shop_profiles(회원) · shop_products(상품) · shop_orders(주문) · shop_order_items(주문 상세)
+   · 공개(publishable) 키만 둡니다. secret / service_role 키와 DB 비밀번호는 절대 넣지 마세요.
+   · 보안은 화면이 아니라 DB 의 RLS 규칙이 지킵니다. */
 const SUPABASE_URL = 'https://bdgcczbizdaygosnizrc.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_etY-afZggso6DldRfVdk5w_q4NFm25h';
-const db = (window.supabase && !SUPABASE_KEY.includes('내공개키'))
+const db = (window.supabase && SUPABASE_KEY && !SUPABASE_KEY.includes('내공개키'))
   ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
-  : null;   // 값을 채우기 전에는 null → 지금처럼 브라우저 저장 방식으로 동작
+  : null;   // 라이브러리를 못 불러오면 null → 브라우저 저장 방식으로 동작
+const SB = !!db;
 </script>
 <script>
 /* =========================================================
@@ -826,12 +828,12 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const today = () => new Date().toLocaleDateString('ko-KR', {year:'numeric', month:'2-digit', day:'2-digit'}).replace(/\s/g,'');
 
 /* ---------- 등급 설정 (여기만 고치면 전체에 반영) ---------- */
+/* 등급은 shop_profiles.grade 의 값(WELCOME · SILVER · GOLD · VIP)과 같습니다. 기준 금액은 DB 함수 shop_grade_for 와 같게 유지하세요. */
 const TIERS = [
-  { key:'bronze',   name:'BRONZE',   kr:'브론즈',   min:0,          rate:1, color:'#b0793f', perks:['가입 축하 3,000P','50만원 이상 무료배송','드랍 입고 알림'] },
-  { key:'silver',   name:'SILVER',   kr:'실버',     min:1000000,    rate:3, color:'#c4c8d0', perks:['전 상품 무료배송','드랍 알림 우선 발송','검수 결과 문자 안내'] },
-  { key:'gold',     name:'GOLD',     kr:'골드',     min:3000000,    rate:5, color:'#e8cb7e', perks:['전 상품 무료배송','드랍 1시간 먼저 입장','검수 결과 우선 안내'] },
-  { key:'platinum', name:'PLATINUM', kr:'플래티넘', min:7000000,    rate:8, color:'#9fd6e8', perks:['전 상품 무료배송','드랍 3시간 먼저 입장','전담 상담 채널'] },
-  { key:'black',    name:'BLACK',    kr:'블랙',     min:15000000,   rate:12, color:'#111111', perks:['전 상품 무료배송','드랍 24시간 먼저 입장','검수·배송 최우선 처리'] },
+  { key:'welcome', name:'WELCOME', kr:'웰컴',   db:'WELCOME', min:0,        rate:1,  color:'#b0793f', perks:['가입 축하 3,000P','50만원 이상 무료배송','드랍 입고 알림'] },
+  { key:'silver',  name:'SILVER',  kr:'실버',   db:'SILVER',  min:1000000,  rate:3,  color:'#c4c8d0', perks:['전 상품 무료배송','드랍 알림 우선 발송','검수 결과 문자 안내'] },
+  { key:'gold',    name:'GOLD',    kr:'골드',   db:'GOLD',    min:3000000,  rate:5,  color:'#e8cb7e', perks:['전 상품 무료배송','드랍 1시간 먼저 입장','검수 결과 우선 안내'] },
+  { key:'vip',     name:'VIP',     kr:'VIP',    db:'VIP',     min:10000000, rate:12, color:'#111111', perks:['전 상품 무료배송','드랍 24시간 먼저 입장','검수·배송 최우선 처리'] },
 ];
 const SIGNUP_BONUS = 3000;
 const SHIP_FEE = 3000, FREE_SHIP_BRONZE = 500000;
@@ -849,7 +851,7 @@ const WELCOME_COUPON = { name:'신규 가입 10,000원 할인', value:10000, min
 /* ---------- 상품 데이터 (예시 · 가상 브랜드) ---------- */
 const SIZES = [230,235,240,245,250,255,260,265,270,275,280,285,290];
 const SIZE_OFF = {230:-.05,235:-.04,240:-.03,245:-.02,250:-.01,255:-.005,260:0,265:.01,270:.02,275:.03,280:.04,285:.055,290:.07};
-const PRODUCTS = [
+const LOCAL_PRODUCTS = [
   {id:'p01',brand:'AERO',   name:'Lo-1',    cw:'블랙 옐로',  price:1290000, retail:289000, qty:300, year:2025, out:[230], seed:3},
   {id:'p02',brand:'AERO',   name:'Lo-1',    cw:'크림슨 코트',      price:890000,  retail:259000, qty:800, year:2024, out:[290], seed:5},
   {id:'p03',brand:'KINETIC',name:'Pulse',   cw:'코발트 펄스',      price:540000,  retail:219000, qty:1500,year:2025, out:[], seed:8},
@@ -864,18 +866,22 @@ const PRODUCTS = [
   {id:'p12',brand:'KINETIC',name:'Chrome',  cw:'크롬 실버',        price:720000,  retail:239000, qty:700, year:2024, out:[250], seed:12},
 ];
 /* 최근 거래가 (예시: id 기반으로 고정 생성) */
-PRODUCTS.forEach((p, i) => {
+function decorate(p, i) {
   let r = p.seed * 9301 + 49297, arr = [], cur = p.price * (0.9 + (p.seed % 7) * 0.04);
   for (let k = 0; k < 8; k++) { r = (r * 9301 + 49297) % 233280; cur *= 1 + ((r / 233280) - .42) * .09; arr.push(Math.round(cur / 1000) * 1000); }
   arr[arr.length - 1] = p.price; p.trades = arr;
   p.change = (arr[arr.length - 1] - arr[0]) / arr[0] * 100;
   p.pop = 100 - i * 3 + (p.seed % 4) * 5;
-});
+  return p;
+}
+let PRODUCTS = LOCAL_PRODUCTS.map(decorate);
+const META = Object.fromEntries(LOCAL_PRODUCTS.map(p => [p.id, p]));   // 발매가·발매년·한정 수량 같은 화면용 부가 정보
 const byId = id => PRODUCTS.find(p => p.id === id);
+const byDbId = n => PRODUCTS.find(p => p.dbId === n);
 /* 목록·상세 사진은 모두 신발코가 왼쪽을 향하도록 맞춤 (원본이 오른쪽인 모델은 좌우 반전한 파일 사용) */
 const FLIPPED = new Set(['p01', 'p11']);
-const imgOf = id => `img/${id}${FLIPPED.has(id) ? '_left' : ''}.png`;
-const pname = p => `${p.brand} ${p.name} ‘${p.cw}’`;
+const imgOf = id => { const p = byId(id); return p && p.img ? p.img : `img/${id}${FLIPPED.has(id) ? '_left' : ''}.png`; };
+const pname = p => `${p.brand} ${p.name}${p.cw ? ` ‘${p.cw}’` : ''}`;
 /* 상품 상세 설명 (상품 표의 부가 정보) */
 const INFO = {
   p01:{mat:'프리미엄 가죽 · 옐로 스웨이드 패널', sole:'크림 미드솔 · 블랙 아웃솔', story:'블랙 가죽에 옐로 스웨이드와 옐로 레이스를 더한 로우탑입니다. 선명한 두 가지 색 대비로 가장 먼저 품절됩니다.'},
@@ -900,7 +906,7 @@ const LS = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
 };
 let users = LS.get('gs_users', {});
-let sessionEmail = LS.get('gs_session', null);
+let sessionEmail = window.supabase ? null : LS.get('gs_session', null);   /* DB 연결 시 로그인 상태는 Supabase 세션이 정합니다 */
 let cart = LS.get('gs_cart', []);
 const me = () => sessionEmail ? users[sessionEmail] : null;
 const saveUsers = () => LS.set('gs_users', users);
@@ -920,11 +926,16 @@ const seedInventory = () => PRODUCTS.flatMap(p => SIZES.map(s => ({
 })));
 let inventory = LS.get(INV_KEY, null);
 if (!Array.isArray(inventory) || inventory.length !== PRODUCTS.length * SIZES.length) { inventory = seedInventory(); LS.set(INV_KEY, inventory); }
+function ensureInventory() {   /* DB 상품이 바뀌면 없는 사이즈 행만 채웁니다 (기존 재고는 지우지 않음) */
+  const have = new Set(inventory.map(r => r.sku));
+  seedInventory().forEach(r => { if (!have.has(r.sku)) inventory.push(r); });
+  LS.set(INV_KEY, inventory);
+}
 let stockLog = LS.get(LOG_KEY, []);
 const saveInventory = () => { LS.set(INV_KEY, inventory); LS.set(LOG_KEY, stockLog.slice(0, 500)); };
 const invRow = (pid, size) => inventory.find(r => r.pid === pid && r.size === size);
-const sizeStock = (pid, size) => (invRow(pid, size) || {}).stock || 0;
-const totalStock = p => inventory.filter(r => r.pid === p.id).reduce((a, r) => a + r.stock, 0);
+const sizeStock = (pid, size) => { const p = byId(pid); if (p && p.dbStock === 0) return 0; return (invRow(pid, size) || {}).stock || 0; };
+const totalStock = p => p.dbStock === 0 ? 0 : inventory.filter(r => r.pid === p.id).reduce((a, r) => a + r.stock, 0);
 const sizePrice = (p, s) => (invRow(p.id, s) || {}).price || p.price;
 const soldOut = p => totalStock(p) === 0;
 const iso = d => { const x = new Date(d), z = n => String(n).padStart(2, '0'); return `${x.getFullYear()}-${z(x.getMonth() + 1)}-${z(x.getDate())}`; };
@@ -933,15 +944,17 @@ const nowIso = () => iso(Date.now());
 
 /* ---------- 포인트 유효기간: 적립 건(lot)마다 만료일을 두고, 오래된 순으로 사용 ---------- */
 function ensureLots(u) {
+  if (SB) { u.lots = u.lots || []; u.coupons = u.coupons || []; return; }
   if (!Array.isArray(u.lots)) u.lots = u.points > 0 ? [{ id: 'L0', amt: u.points, left: u.points, exp: addDays(POINT_EXP_DAYS), src: '기존 포인트' }] : [];
   if (!Array.isArray(u.coupons)) u.coupons = [];
 }
-const sumLots = u => { u.points = u.lots.reduce((a, l) => a + l.left, 0); };
+const sumLots = u => { if (SB) return; u.points = u.lots.reduce((a, l) => a + l.left, 0); };
 function addLot(u, amt, days, src) {
   const l = { id: 'L' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), amt, left: amt, exp: addDays(days), src };
   u.lots.push(l); sumLots(u); return l;
 }
 function expireLots(u) {
+  if (SB) return 0;
   const t = nowIso(); let lost = 0;
   u.lots.forEach(l => { if (l.left > 0 && l.exp < t) { lost += l.left; l.left = 0; } });
   if (lost) u.history.unshift({ d: today(), type: '소멸', amt: -lost, desc: '유효기간 만료' });
@@ -991,40 +1004,7 @@ const starStr = n => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n
 const ST = { WAIT:'검수 대기', INSP:'검수 중', PASS:'검수 합격', PACK:'포장 중', SHIP:'배송중', DONE:'배송 완료', CANCEL:'취소 완료', REFUND:'환불 완료' };
 const GRADE = { S:'새 상품 · 박스까지 완전한 상태', A:'새 상품 · 박스에 미세한 흠집', B:'새 상품 · 박스 눌림 등 경미한 보관 흔적' };
 const statCls = st => ({ '검수 중':'s-ing', '검수 합격':'s-pass', '포장 중':'s-ing', '배송중':'s-ship', '배송 완료':'s-pass', '취소 완료':'s-bad', '환불 완료':'s-bad' })[st] || '';
-/* ---------- Supabase 동기화: 주문 INSERT / 상태 UPDATE (DB 연결 전에는 건너뜀) ---------- */
-let dbMsg = '';
-const dbErr = (what, e) => { dbMsg = `${what} 실패: ${e.message || e}`; console.warn('[supabase]', dbMsg); };
-async function dbInsertOrder(u, o) {
-  if (!db) return;
-  try {
-    let q = await db.from('orders').insert({ order_id: o.id, member_email: u.email, member_name: u.name, status: o.status, subtotal: o.sub,
-      coupon_disc: o.couponDisc || 0, point_used: o.use, shipping_fee: o.ship, paid: o.pay, point_earned: o.earn, pay_method: o.method, receiver: o.to.name, address: o.to.addr });
-    if (q.error) throw q.error;
-    q = await db.from('order_items').insert(o.items.map(i => ({ order_id: o.id, sku: `${i.id}-${i.size}`, price: i.price })));
-    if (q.error) throw q.error;
-    q = await db.from('order_status_log').insert({ order_id: o.id, status: o.status, note: '주문 접수' });
-    if (q.error) throw q.error;
-  } catch (e) { dbErr('주문 저장', e); }
-}
-async function dbUpdateStatus(o, note) {
-  if (!db) return;
-  try {
-    const row = { status: o.status };
-    if (o.insp) { row.inspect_result = o.insp.result; row.inspect_grade = o.insp.grade || null; row.inspect_note = o.insp.note || null; }
-    if (o.track) { row.courier = o.track.courier; row.tracking_no = o.track.no; }
-    if (o.refund) { row.refunded_at = new Date().toISOString(); row.refund_reason = o.refund.reason; }
-    let q = await db.from('orders').update(row).eq('order_id', o.id);          // UPDATE orders SET status = ... WHERE order_id = ...
-    if (q.error) throw q.error;
-    q = await db.from('order_status_log').insert({ order_id: o.id, status: o.status, note: note || null });
-    if (q.error) throw q.error;
-  } catch (e) { dbErr('상태 변경', e); }
-}
-async function dbOrderStats() {
-  if (!db) return null;
-  const q = await db.from('orders').select('status'); if (q.error) throw q.error;
-  const by = {}; q.data.forEach(x => by[x.status] = (by[x.status] || 0) + 1); return { total: q.data.length, by };
-}
-function pushHist(o, st, note) { if (!o.hist) o.hist = [{ s: '주문 접수', t: o.d }]; o.hist.push({ s: st, t: stamp(), note }); o.status = st; if (o._dbReady !== false) setTimeout(() => dbUpdateStatus(o, note), 0); }
+function pushHist(o, st, note) { if (!o.hist) o.hist = [{ s: '주문 접수', t: o.d }]; o.hist.push({ s: st, t: stamp(), note }); o.status = st; }
 const allOrders = () => Object.values(users).flatMap(u => (u.orders || []).map(o => ({ u, o })));
 /* 취소·검수 불합격 환불: 재고 복원, 사용 포인트 복원, 적립 포인트 회수, 쿠폰 복원, 누적금액 차감 */
 function refundOrder(u, o, reason, status) {
@@ -1032,8 +1012,10 @@ function refundOrder(u, o, reason, status) {
   o.items.forEach(i => { const r = invRow(i.id, i.size); if (r) { r.stock += 1; stockLog.unshift({ t: stamp(), sku: `${i.id}-${i.size}`, type: '취소', delta: 1, note: `${o.id} ${reason}` }); } });
   u.spent = Math.max(0, u.spent - (o.sub - (o.couponDisc || 0) - o.use));
   let back = 0, revoked = 0;
-  if (o.use) { back = o.use; if (o.useLots && o.useLots.length) returnPoints(u, o.useLots); else addLot(u, o.use, 30, '환불 복원'); }
-  if (o.earn) revoked = revokePoints(u, o.earn, o.earnLot);
+  if (!SB) {
+    if (o.use) { back = o.use; if (o.useLots && o.useLots.length) returnPoints(u, o.useLots); else addLot(u, o.use, 30, '환불 복원'); }
+    if (o.earn) revoked = revokePoints(u, o.earn, o.earnLot);
+  } else { back = o.use || 0; revoked = o.earn || 0; }
   if (o.couponId) { const c = (u.coupons || []).find(x => x.id === o.couponId); if (c) { c.used = false; if (c.exp < nowIso()) c.exp = addDays(7); } }
   if (back) u.history.unshift({ d: today(), type: '환불', amt: back, desc: `주문 ${o.id} ${reason} · 사용 포인트 복원` });
   if (revoked) u.history.unshift({ d: today(), type: '회수', amt: -revoked, desc: `주문 ${o.id} ${reason} · 적립 포인트 회수` });
@@ -1054,7 +1036,7 @@ const closeAll = () => { $$('.ov.open').forEach(o => o.classList.remove('open'))
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { const o = $$('.ov.open').pop(); if (o) closeM(o.id); } });
 $$('.ov').forEach(o => o.addEventListener('mousedown', e => { if (e.target === o) closeM(o.id); }));
 $$('[data-close]').forEach(b => b.addEventListener('click', () => closeM(b.closest('.ov').id)));
-const medalDot = t => `<i style="background:${t.key==='black'?'#000;border:1px solid #c9a24b':t.color}"></i>`;
+const medalDot = t => `<i style="background:${t.key==='vip'?'#000;border:1px solid #c9a24b':t.color}"></i>`;
 
 async function hashPw(pw, salt) {
   if (window.crypto && crypto.subtle) {
@@ -1097,6 +1079,112 @@ const rndSalt = () => { const a = new Uint8Array(12); (window.crypto || {getRand
 })();
 
 /* =========================================================
+   SUPABASE 연결 층 — 표 이름은 DB 의 shop_ 표와 똑같이 씁니다
+   ========================================================= */
+const T = { profiles: 'shop_profiles', products: 'shop_products', orders: 'shop_orders', items: 'shop_order_items' };
+let sbUid = null, sbProfile = null, sbError = '';
+const isAdminUser = () => !!(sbProfile && sbProfile.role === 'admin');
+const DB_STATUS = { paid: '결제완료', ship: '배송중', done: '배송완료', cancel: '취소' };
+const sbMsg = e => (e && e.message) ? e.message : String(e);
+
+/* ② 상품 목록 : shop_products 에서 읽어 옵니다 (id, name, category, price, stock, image_url, is_active) */
+async function loadProducts() {
+  if (!SB) return false;
+  const q = await db.from(T.products).select('id, name, category, price, stock, image_url, is_active').order('id', { ascending: true });
+  if (q.error) { sbError = '상품 불러오기 실패: ' + sbMsg(q.error); console.warn('[supabase]', sbError); return false; }
+  const rows = q.data.filter(x => x.is_active);
+  if (!rows.length) return false;
+  PRODUCTS = rows.map((row, i) => {
+    const key = ((row.image_url || '').match(/p\d\d/) || [])[0];
+    const meta = key && META[key] ? META[key] : null;
+    const m = (row.name || '').match(/^(.+?)\s*[‘'’](.+)[’']$/);
+    const p = {
+      id: meta ? key : 'd' + row.id, dbId: row.id, brand: row.category, name: m ? m[1] : row.name, cw: m ? m[2] : '',
+      price: row.price, dbStock: row.stock, img: row.image_url || '',
+      retail: meta ? meta.retail : Math.round(row.price * .4 / 1000) * 1000, qty: meta ? meta.qty : 1000, year: meta ? meta.year : new Date().getFullYear(),
+      out: meta ? meta.out : [], seed: meta ? meta.seed : (row.id % 12) + 1
+    };
+    return decorate(p, i);
+  });
+  ensureInventory();
+  cart = cart.filter(c => byId(c.id)); saveCart();
+  brands = ['전체', ...new Set(PRODUCTS.map(p => p.brand))];
+  return true;
+}
+
+/* ④ 회원 : shop_profiles 에서 이름 · 연락처 · 등급 · 포인트 · 역할을 읽습니다 */
+async function loadProfile() {
+  const q = await db.from(T.profiles).select('id, email, name, phone, grade, points, role').eq('id', sbUid).maybeSingle();
+  if (q.error) throw q.error;
+  sbProfile = q.data;
+  return sbProfile;
+}
+/* 누적 구매금액 = 내 주문(shop_orders.total)의 합 (취소 제외) → 등급 기준 */
+async function loadMyOrders() {
+  const q = await db.from(T.orders).select('id, total, status, created_at').eq('user_id', sbUid).order('id', { ascending: false });
+  if (q.error) throw q.error;
+  return q.data;
+}
+function mapStatusFromDb(o, dbStatus, u) {
+  if (dbStatus === DB_STATUS.paid) { if (![ST.WAIT, ST.INSP, ST.PASS, ST.PACK].includes(o.status)) o.status = ST.WAIT; }
+  else if (dbStatus === DB_STATUS.ship && o.status !== ST.SHIP) { o.track = o.track || { courier: 'CJ대한통운', no: String(100000000000 + o.dbId * 7919) }; pushHist(o, ST.SHIP, `${o.track.courier} ${o.track.no}`); }
+  else if (dbStatus === DB_STATUS.done && o.status !== ST.DONE) { o.track = o.track || { courier: 'CJ대한통운', no: String(100000000000 + o.dbId * 7919) }; pushHist(o, ST.DONE); }
+  else if (dbStatus === DB_STATUS.cancel && ![ST.CANCEL, ST.REFUND].includes(o.status)) refundOrder(u, o, '주문 취소', ST.CANCEL);
+}
+async function sbRefresh() {
+  if (!SB || !sbUid) return;
+  try {
+    const u = me(); if (!u) return;
+    const orders = await loadMyOrders();
+    orders.forEach(d => { const o = u.orders.find(x => x.dbId === d.id); if (o) mapStatusFromDb(o, d.status, u); });
+    u.spent = orders.filter(d => d.status !== DB_STATUS.cancel).reduce((a, d) => a + d.total, 0);
+    const pf = await loadProfile();
+    if (pf) { u.name = pf.name || u.name; u.phone = pf.phone || u.phone; u.points = pf.points; u.grade = pf.grade; u.role = pf.role; }
+    saveUsers();
+  } catch (e) { sbError = '회원 정보 불러오기 실패: ' + sbMsg(e); console.warn('[supabase]', sbError); }
+}
+async function applySession(session) {
+  if (!SB) return;
+  if (!session || !session.user) { sbUid = null; sbProfile = null; sessionEmail = null; renderAll(); return; }
+  sbUid = session.user.id;
+  const em = (session.user.email || '').toLowerCase(), md = session.user.user_metadata || {};
+  if (!users[em]) users[em] = { email: em, name: md.name || em.split('@')[0], phone: md.phone || '', points: 0, spent: 0, joined: today(), marketing: false,
+    lots: [], coupons: [], history: [], orders: [], wish: [] };
+  sessionEmail = em; await sbRefresh(); renderAll();
+}
+const sbReady = (async () => {
+  if (!SB) return;
+  await loadProducts();
+  db.auth.onAuthStateChange((ev, session) => {
+    setTimeout(async () => {
+      if (ev === 'SIGNED_OUT') { await applySession(null); return; }
+      if ((ev === 'INITIAL_SESSION' || ev === 'SIGNED_IN') && session && session.user.id !== sbUid) await applySession(session);
+    }, 0);
+  });
+  const { data } = await db.auth.getSession();
+  if (data && data.session && data.session.user.id !== sbUid) await applySession(data.session);
+  renderAll();
+})();
+
+/* ③ 결제 : shop_orders 에 주문 1줄, shop_order_items 에 상품별 줄을 저장합니다.
+   (user_id 는 DB 가 auth.uid() 로 자동 입력 · 같은 상품을 여러 사이즈로 담으면 수량을 합쳐 한 줄로 저장)
+   포인트·재고·등급 반영은 supabase/shop_extras.sql 의 함수 shop_settle_order 가 DB 안에서 처리합니다. */
+async function sbSaveOrder(items, total, usePoints) {
+  const o = await db.from(T.orders).insert({ total }).select('id').single();
+  if (o.error) throw o.error;
+  const orderId = o.data.id, lines = new Map();
+  items.forEach(i => { const p = byId(i.id), cur = lines.get(p.dbId) || { qty: 0, sum: 0 }; cur.qty += 1; cur.sum += i.price; lines.set(p.dbId, cur); });
+  const rows = [...lines].map(([pid, l]) => ({ order_id: orderId, product_id: pid, qty: l.qty, unit_price: Math.round(l.sum / l.qty) }));
+  const it = await db.from(T.items).insert(rows);
+  if (it.error) throw it.error;
+  let settle = null;
+  const st = await db.rpc('shop_settle_order', { p_order_id: orderId, p_use_points: usePoints });
+  if (st.error) { sbError = '포인트·재고 반영 실패(shop_extras.sql 실행 여부 확인): ' + sbMsg(st.error); console.warn('[supabase]', sbError); }
+  else settle = st.data;
+  return { orderId, settle };
+}
+
+/* =========================================================
    HEADER / AUTH AREA
    ========================================================= */
 function renderAuthArea() {
@@ -1135,12 +1223,23 @@ $('#signForm').addEventListener('submit', async e => {
   let ok = true;
   ok &= setErr(name, name.value.trim().length < 2 ? '이름을 2자 이상 입력해 주세요.' : '');
   const em = email.value.trim().toLowerCase();
-  ok &= setErr(email, !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em) ? '이메일 형식을 확인해 주세요.' : users[em] ? '이미 가입된 이메일입니다. 로그인해 주세요.' : '');
+  ok &= setErr(email, !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em) ? '이메일 형식을 확인해 주세요.' : (!SB && users[em]) ? '이미 가입된 이메일입니다. 로그인해 주세요.' : '');
   ok &= setErr(pw, !(pw.value.length >= 8 && /[A-Za-z]/.test(pw.value) && /\d/.test(pw.value)) ? '8자 이상, 영문과 숫자를 함께 입력해 주세요.' : '');
   ok &= setErr(pw2, pw.value !== pw2.value ? '비밀번호가 일치하지 않습니다.' : '');
   ok &= setErr(ph, !/^01\d-\d{3,4}-\d{4}$/.test(ph.value) ? '휴대폰 번호를 010-0000-0000 형식으로 입력해 주세요.' : '');
   const agree = $('#sAgree').checked; $('#agreeErr').textContent = agree ? '' : '필수 약관에 동의해 주세요.';
   if (!ok || !agree) return;
+  if (SB) {   /* Supabase Auth 회원가입 — 이름·연락처를 함께 보냅니다 (DB 트리거가 shop_profiles 에 저장) */
+    const btn = e.target.querySelector('button[type=submit]'); btn.disabled = true;
+    const { data, error } = await db.auth.signUp({ email: em, password: pw.value,
+      options: { data: { name: name.value.trim(), phone: ph.value }, emailRedirectTo: location.origin + location.pathname } });
+    btn.disabled = false;
+    if (error) { return setErr(email, /registered|already/i.test(error.message) ? '이미 가입된 이메일입니다. 로그인해 주세요.' : '가입에 실패했습니다: ' + error.message); }
+    e.target.reset();
+    if (data.session) { await applySession(data.session); closeM('m-auth'); toast(`가입을 환영합니다! <b>${pts(SIGNUP_BONUS)}</b>가 적립되었습니다.`); if (pendingCheckout) { pendingCheckout = false; startCheckout(); } }
+    else { authTab('login'); const m = $('#loginMsg'); m.hidden = false; m.textContent = '가입 확인 메일을 보냈습니다. 메일의 링크를 누른 뒤 로그인해 주세요.'; $('#lEmail').value = em; }
+    return;
+  }
   const salt = rndSalt();
   users[em] = { email: em, name: name.value.trim(), phone: ph.value, salt, hash: await hashPw(pw.value, salt),
     points: SIGNUP_BONUS, spent: 0, joined: today(), marketing: $('#sMkt').checked,
@@ -1158,6 +1257,14 @@ let loginFails = 0;
 $('#loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   const em = $('#lEmail').value.trim().toLowerCase(), pw = $('#lPw').value, msg = $('#loginMsg');
+  if (SB) {   /* Supabase Auth 로그인 */
+    const { data, error } = await db.auth.signInWithPassword({ email: em, password: pw });
+    if (error) { loginFails++; msg.hidden = false; msg.textContent = /confirm/i.test(error.message) ? '이메일 확인이 아직 끝나지 않았습니다. 받은 메일의 링크를 눌러 주세요.' : '이메일 또는 비밀번호가 맞지 않습니다.' + (loginFails >= 3 ? ' 계정이 없다면 회원가입을 진행해 주세요.' : ''); return; }
+    loginFails = 0; msg.hidden = true; e.target.reset(); await applySession(data.session); closeM('m-auth');
+    const nm = me() ? me().name : ''; toast(`<b>${esc(nm)}</b>님, 환영합니다.`);
+    if (pendingCheckout) { pendingCheckout = false; startCheckout(); }
+    return;
+  }
   const u = users[em];
   const ok = u && (await hashPw(pw, u.salt)) === u.hash;
   if (!ok) { loginFails++; msg.hidden = false; msg.textContent = '이메일 또는 비밀번호가 맞지 않습니다.' + (loginFails >= 3 ? ' 계정이 없다면 회원가입을 진행해 주세요.' : ''); return; }
@@ -1165,13 +1272,13 @@ $('#loginForm').addEventListener('submit', async e => {
   e.target.reset(); closeM('m-auth'); renderAll(); toast(`<b>${esc(u.name)}</b>님, 환영합니다.`);
   if (pendingCheckout) { pendingCheckout = false; startCheckout(); }
 });
-function logout() { sessionEmail = null; LS.set('gs_session', null); closeAll(); renderAll(); toast('로그아웃되었습니다.'); }
+async function logout() { if (SB) { await db.auth.signOut(); sbUid = null; sbProfile = null; } sessionEmail = null; LS.set('gs_session', null); closeAll(); renderAll(); toast('로그아웃되었습니다.'); }
 
 /* =========================================================
    SHOP GRID
    ========================================================= */
 let fBrand = '전체', fQuery = '', fSort = 'pop';
-const brands = ['전체', ...new Set(PRODUCTS.map(p => p.brand))];
+let brands = ['전체', ...new Set(PRODUCTS.map(p => p.brand))];
 $('#brandChips').innerHTML = brands.map((b, i) => `<button class="chip${i===0?' on':''}" data-b="${b}">${b}</button>`).join('');
 $('#brandChips').addEventListener('click', e => { const c = e.target.closest('.chip'); if (!c) return; fBrand = c.dataset.b; $$('.chip').forEach(x => x.classList.toggle('on', x === c)); renderGrid(); });
 $('#q').addEventListener('input', e => { fQuery = e.target.value.trim().toLowerCase(); renderGrid(); });
@@ -1193,7 +1300,7 @@ function renderGrid() {
       <button class="wish${w?' on':''}" data-wish="${p.id}" aria-label="찜하기" aria-pressed="${!!w}">${heart}</button>
       <div class="info">
         <span class="brand">${p.brand}</span>
-        <h3>${esc(p.name)} ‘${esc(p.cw)}’</h3>
+        <h3>${esc(p.name)}${p.cw ? ` ‘${esc(p.cw)}’` : ''}</h3>
         <span class="cw">발매가 ${won(p.retail)}</span>
         <div class="price-row"><div class="price num"><small>즉시구매가</small>${so?'<span style="color:var(--mute)">품절</span>':won(p.price)}</div><span class="trend ${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(p.change).toFixed(1)}%</span></div>
       </div></article>`;
@@ -1245,7 +1352,7 @@ function renderProduct() {
     <div class="pd-img"><img src="${imgOf(p.id)}" alt="${esc(pname(p))}"></div>
     <div class="pd-body">
       <span class="brand">${p.brand}</span>
-      <h2>${esc(p.name)} ‘${esc(p.cw)}’</h2>
+      <h2>${esc(p.name)}${p.cw ? ` ‘${esc(p.cw)}’` : ''}</h2>
       <p class="cw">${p.year}년 발매 · 한정 ${p.qty.toLocaleString()}켤레</p>
       ${rv.length ? `<span class="rating"><span class="stars">★</span><b style="color:var(--ink)">${avg.toFixed(1)}</b> 리뷰 ${rv.length}개</span>` : ''}
       <div class="pd-meta"><div><small>발매가</small><b class="num">${won(p.retail)}</b></div><div><small>최근 거래가</small><b class="num">${won(p.trades.at(-2))}</b></div><div><small>8회 변동</small><b class="trend ${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(p.change).toFixed(1)}%</b></div></div>
@@ -1289,7 +1396,7 @@ function addToCart(id, size, silent) {
 function calc(items = cart, use = 0, couponId = null) {
   const u = me(), t = tierOf(u ? u.spent : 0);
   const sub = items.reduce((a, c) => a + sizePrice(byId(c.id), c.size), 0);
-  const ship = !items.length ? 0 : (t.key !== 'bronze' || sub >= FREE_SHIP_BRONZE) ? 0 : SHIP_FEE;
+  const ship = !items.length ? 0 : (t.key !== 'welcome' || sub >= FREE_SHIP_BRONZE) ? 0 : SHIP_FEE;
   const cp = u && couponId ? (u.coupons || []).find(c => c.id === couponId) : null;
   const couponDisc = cp && couponOk(cp, sub) ? Math.min(cp.value, sub) : 0;
   use = Math.max(0, Math.min(use, sub - couponDisc, u ? u.points : 0));
@@ -1336,6 +1443,7 @@ function startCheckout() {
   const u = me(); closeM('m-cart');
   $('#cName').value = $('#cName').value || u.name; $('#cPhone').value = $('#cPhone').value || u.phone;
   $('#usePt').value = ''; $('#cAgree').checked = false; $('#coMsg').hidden = true; fillCoupons();
+  $('#couponH').hidden = SB; $('#cCoupon').hidden = SB;   /* DB 연결 시 쿠폰은 사용하지 않음 */
   $('#coItems').innerHTML = cart.map(c => { const p = byId(c.id); return `<div class="co-item"><img src="${imgOf(p.id)}" alt=""><div>${esc(pname(p))}<br><span style="color:var(--mute)">${c.size}mm</span></div><b class="num">${won(sizePrice(p, c.size))}</b></div>`; }).join('');
   updateCo(); openM('m-checkout');
 }
@@ -1404,24 +1512,35 @@ $('#coForm').addEventListener('submit', async e => {
   btn.disabled = false;
   if (!r.ok) { updateCo(); return coError('결제에 실패했습니다. 결제 수단을 확인하고 다시 시도해 주세요.'); }
 
+  /* DB 연결 시: shop_orders / shop_order_items 저장 + 포인트·재고 반영 */
+  let dbRes = null;
+  if (SB) {
+    try {
+      dbRes = await sbSaveOrder(cart.map(c => ({ id: c.id, size: c.size, price: sizePrice(byId(c.id), c.size) })), k.pay, k.use);
+    } catch (err) {
+      btn.disabled = false; updateCo();
+      return coError('주문 저장에 실패했습니다: ' + sbMsg(err));
+    }
+  }
   /* 주문 확정 → 포인트 사용·적립 → 누적금액·등급 갱신 */
   const before = tierOf(u.spent), spentAdd = k.sub - k.couponDisc - k.use, cpId = k.couponDisc ? couponVal() : null;
-  const order = { id: 'GS' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + Math.floor(1000 + Math.random() * 9000), d: today(),
+  const order = { id: 'GS' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + (dbRes ? dbRes.orderId : Math.floor(1000 + Math.random() * 9000)), dbId: dbRes ? dbRes.orderId : null, d: today(),
     items: cart.map(c => ({ id: c.id, size: c.size, price: sizePrice(byId(c.id), c.size) })), sub: k.sub, ship: k.ship, use: k.use, pay: k.pay, earn: k.earn, rate: k.rate, method: PAY_NAME[payMethod], tx: r.txId, status: ST.WAIT, couponId: cpId, couponDisc: k.couponDisc, hist: [{ s: '주문 접수', t: stamp() }],
     to: { name: f('cName').value.trim(), addr: `${f('cAddr').value.trim()} ${f('cAddr2').value.trim()}`.trim() } };
   u.orders.unshift(order);
-  dbInsertOrder(u, order);
   order.items.forEach(i => {   /* 재고 표 차감 + 입출고 기록 */
     const r = invRow(i.id, i.size); r.stock = Math.max(0, r.stock - 1);
     stockLog.unshift({ t: stamp(), sku: `${i.id}-${i.size}`, type: '판매', delta: -1, note: order.id });
   });
   saveInventory();
   ensureLots(u);
-  if (k.use) { order.useLots = spendPoints(u, k.use); u.history.unshift({ d: today(), type: '사용', amt: -k.use, desc: `주문 ${order.id} 포인트 사용` }); }
-  if (k.earn) { const lot = addLot(u, k.earn, POINT_EXP_DAYS, '구매 적립'); order.earnLot = lot.id; u.history.unshift({ d: today(), type: '적립', amt: k.earn, desc: `주문 ${order.id} · ${k.t.kr} ${k.rate}% 적립`, exp: lot.exp }); }
+  if (SB) { if (k.use) u.history.unshift({ d: today(), type: '사용', amt: -k.use, desc: `주문 ${order.id} 포인트 사용` }); if (k.earn) u.history.unshift({ d: today(), type: '적립', amt: k.earn, desc: `주문 ${order.id} · ${k.t.kr} ${k.rate}% 적립` }); }
+  else if (k.use) { order.useLots = spendPoints(u, k.use); u.history.unshift({ d: today(), type: '사용', amt: -k.use, desc: `주문 ${order.id} 포인트 사용` }); }
+  if (!SB && k.earn) { const lot = addLot(u, k.earn, POINT_EXP_DAYS, '구매 적립'); order.earnLot = lot.id; u.history.unshift({ d: today(), type: '적립', amt: k.earn, desc: `주문 ${order.id} · ${k.t.kr} ${k.rate}% 적립`, exp: lot.exp }); }
   if (cpId) { const c = u.coupons.find(x => x.id === cpId); if (c) { c.used = true; c.orderId = order.id; } }
   order.items.forEach(i => realTrades.push({ pid: i.id, size: i.size, price: i.price, t: stamp() })); LS.set(TRADE_KEY, realTrades.slice(-500));
   u.spent += spentAdd; saveUsers();
+  if (SB) { await sbRefresh(); if (sbError && dbRes && !dbRes.settle) toast(sbError); }
   const after = tierOf(u.spent);
   cart = []; saveCart(); closeM('m-checkout'); renderAll();
   $('#doneBody').innerHTML = `<div class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.500"><path d="M5 12l5 5 9-10"/></svg></div>
@@ -1437,7 +1556,7 @@ $('#doneBody').addEventListener('click', e => { if (e.target.id === 'doneShop') 
    MY PAGE
    ========================================================= */
 let myTab = 'points', curOrder = null, cancelArmed = null, rvState = null;
-function openMy(tab) { myTab = typeof tab === 'string' ? tab : 'points'; renderMy(); openM('m-my'); }
+function openMy(tab) { myTab = typeof tab === 'string' ? tab : 'points'; renderMy(); openM('m-my'); if (SB) sbRefresh().then(() => { renderMy(); renderAuthArea(); }); }
 function renderMy() {
   const u = me(); if (!u) return;
   ensureLots(u);
@@ -1493,12 +1612,16 @@ function orderHtml(o) {
 function renderOrder() { const u = me(), o = u && u.orders.find(x => x.id === curOrder); if (o) $('#orderBody').innerHTML = orderHtml(o); }
 function openOrder(id) { curOrder = id; cancelArmed = null; renderOrder(); openM('m-order'); }
 function refreshViews() { renderAll(); if ($('#m-my').classList.contains('open')) renderMy(); if ($('#m-order').classList.contains('open')) renderOrder(); if ($('#m-product').classList.contains('open') && curP) renderProduct(); }
-$('#orderBody').addEventListener('click', e => {
+$('#orderBody').addEventListener('click', async e => {
   const u = me(); if (!u) return;
   if (e.target.id === 'cancelOrder') {
     if (cancelArmed !== curOrder) { cancelArmed = curOrder; return renderOrder(); }
     cancelArmed = null; const o = u.orders.find(x => x.id === curOrder); if (!o || o.status !== ST.WAIT) return;
-    refundOrder(u, o, '고객 요청 취소', ST.CANCEL); refreshViews();
+    if (SB && o.dbId) {
+      const q = await db.rpc('shop_cancel_order', { p_order_id: o.dbId });
+      if (q.error) return toast('취소에 실패했습니다: ' + sbMsg(q.error));
+    }
+    refundOrder(u, o, '고객 요청 취소', ST.CANCEL); if (SB) await sbRefresh(); refreshViews();
     return toast(`주문을 취소했어요. <b>${won(o.pay)}</b> 환불 예정`);
   }
   const rv = e.target.closest('[data-rv]'); if (rv) { const [oid, key] = rv.dataset.rv.split('|'); openReview(oid, key); }
@@ -1586,7 +1709,7 @@ function renderFooterInfo() {
 function renderTiers() {
   const u = me(), cur = u ? tierOf(u.spent) : null;
   $('#tiers').innerHTML = TIERS.map(t => `<div class="tier${cur && cur.key === t.key ? ' me' : ''}">
-    <div class="medal" style="background:${t.key==='black'?'#000;border:1px solid #c9a24b;color:#e8cb7e':t.color}">${t.name[0]}</div>
+    <div class="medal" style="background:${t.key==='vip'?'#000;border:1px solid #c9a24b;color:#e8cb7e':t.color}">${t.name[0]}</div>
     <h3>${t.name}</h3><div class="kr">${t.kr}</div>
     <div class="rate num">${t.rate}<sup>%</sup></div><div class="rate-l">구매금액 포인트 적립</div>
     <div class="need">${t.min ? `누적 구매 ${won(t.min)} 이상` : '가입 즉시'}</div>
@@ -1619,10 +1742,14 @@ $('#notifyBtn').addEventListener('click', () => {
    ========================================================= */
 const ADMIN_PASS = 'goldsole1234';
 let admTab = 'products', admFilter = 'all', admResetArmed = false;
-const admOpen = () => { try { return sessionStorage.getItem('gs_adm') === '1'; } catch { return false; } };
+const admOpen = () => SB ? isAdminUser() : (() => { try { return sessionStorage.getItem('gs_adm') === '1'; } catch { return false; } })();
 const stBadge = n => n < 1 ? '<span class="st zero">품절</span>' : n <= 2 ? '<span class="st low">부족</span>' : '<span class="st ok">정상</span>';
 function renderAdmin() {
   const box = $('#admBody');
+  if (SB && !admOpen()) {
+    box.innerHTML = `<h2 class="m-title">관리자 확인</h2><p class="m-sub">${sbProfile ? '이 계정은 관리자가 아닙니다.' : '관리자 계정으로 로그인해 주세요.'}<br>관리자 지정: Supabase SQL Editor 에서 <code>UPDATE public.shop_profiles SET role = 'admin' WHERE email = '내이메일';</code> 을 실행합니다.</p>`;
+    return;
+  }
   if (!admOpen()) {
     box.innerHTML = `<form id="admLogin"><h2 class="m-title">관리자 확인</h2><p class="m-sub">재고 관리 화면입니다. 관리자 비밀번호를 입력해 주세요.</p>
       <div class="f"><label for="admPw">비밀번호</label><input class="field" id="admPw" type="password" autocomplete="off"></div>
@@ -1641,11 +1768,14 @@ function renderAdmin() {
     bar = `<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><select class="field" id="admFilter" aria-label="상품 필터" style="min-height:44px"><option value="all">전체 상품</option>${PRODUCTS.map(p => `<option value="${p.id}"${admFilter === p.id ? ' selected' : ''}>${p.id} · ${esc(pname(p))}</option>`).join('')}</select><span style="color:var(--mute);font-size:13px">${rows.length}건</span></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" data-csv="inventory">CSV 내려받기</button><button class="btn btn-ghost btn-sm" id="admReset">${admResetArmed ? '한 번 더 누르면 초기화됩니다' : '재고 초기화'}</button><button class="btn btn-gold btn-sm" id="admSave">변경 저장</button></div>`;
   }
-  if (admTab === 'orders') {
+  if (admTab === 'orders' && SB) {
+    body = '<div class="empty-s">DB 주문을 불러오는 중…</div>';
+    bar = '<span style="color:var(--mute);font-size:13px">shop_orders 전체 주문 (관리자만 볼 수 있음)</span>';
+    sbAdminOrders();
+  } else if (admTab === 'orders') {
     const list = allOrders().sort((a, b) => b.o.id.localeCompare(a.o.id)), open = list.filter(x => [ST.WAIT, ST.INSP, ST.PASS, ST.PACK, ST.SHIP].includes(x.o.status)).length;
     body = list.length ? `<table class="tbl"><thead><tr><th>주문번호</th><th>고객</th><th>상품</th><th>결제</th><th>상태</th><th>처리</th></tr></thead><tbody>${list.map(({ u, o }) => `<tr><td class="num">${o.id}<br><small style="color:var(--mute)">${o.d}</small></td><td>${esc(u.name)}<br><small style="color:var(--mute)">${esc(u.email)}</small></td><td>${o.items.map(i => `${esc(pname(byId(i.id)))} (${i.size})`).join('<br>')}</td><td class="num">${won(o.pay)}</td><td><span class="stat ${statCls(o.status)}">${o.status}</span></td><td>${admActions(o)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">아직 주문이 없습니다.<br>쇼핑몰에서 주문하면 여기에 나타납니다.</div>';
-    bar = `<span style="color:var(--mute);font-size:13px">주문 ${list.length}건 · 처리 필요 ${open}건</span><span id="dbStat" style="color:var(--dim);font-size:12px">이 브라우저에 저장된 주문만 보입니다</span>`;
-    setTimeout(async () => { const el = $('#dbStat'); if (!el || !db) return; el.textContent = 'DB 확인 중…'; try { const st = await dbOrderStats(); el.innerHTML = `<b style="color:var(--ok)">Supabase 연결됨</b> · DB 주문 ${st.total}건` + Object.entries(st.by).map(([k, v]) => ` · ${k} ${v}`).join(''); } catch (e) { el.innerHTML = `<b style="color:var(--red)">DB 오류</b> ${esc(e.message || String(e))} (supabase/setup.sql 을 실행했는지 확인)`; } }, 0);
+    bar = `<span style="color:var(--mute);font-size:13px">주문 ${list.length}건 · 처리 필요 ${open}건</span><span style="color:var(--dim);font-size:12px">이 브라우저에 저장된 주문만 보입니다</span>`;
   }
   if (admTab === 'log') {
     body = stockLog.length ? `<table class="tbl"><thead><tr><th>일시</th><th>SKU</th><th>구분</th><th>증감</th><th>비고</th></tr></thead><tbody>${stockLog.slice(0, 200).map(l => `<tr><td class="num">${l.t}</td><td class="num">${l.sku}</td><td>${l.type}</td><td class="num ${l.delta > 0 ? 'plus' : 'minus'}">${l.delta > 0 ? '+' : ''}${l.delta}</td><td>${esc(l.note || '')}</td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">아직 입출고 기록이 없습니다.<br>주문이 들어오거나 재고를 수정하면 여기에 쌓입니다.</div>';
@@ -1656,12 +1786,39 @@ function renderAdmin() {
     <div class="tabs">${tabs.map(([k, v]) => `<button data-adm="${k}" class="${admTab === k ? 'on' : ''}">${v}</button>`).join('')}</div>
     <div class="adm-bar">${bar}</div><div class="adm-wrap">${body}</div>`;
 }
+async function sbAdminOrders() {
+  const wrap = () => $('#admBody .adm-wrap');
+  try {
+    const [o, it, pf] = await Promise.all([
+      db.from(T.orders).select('id, user_id, total, status, created_at').order('id', { ascending: false }),
+      db.from(T.items).select('order_id, product_id, qty, unit_price'),
+      db.from(T.profiles).select('id, name, email')]);
+    if (o.error) throw o.error; if (it.error) throw it.error; if (pf.error) throw pf.error;
+    const who = Object.fromEntries(pf.data.map(x => [x.id, x]));
+    const act = x => x.status === DB_STATUS.paid ? `<button class="btn btn-gold btn-sm" data-dbact="ship" data-id="${x.id}">배송 시작</button> <button class="btn btn-ghost btn-sm" data-dbact="cancel" data-id="${x.id}">취소·환불</button>`
+      : x.status === DB_STATUS.ship ? `<button class="btn btn-gold btn-sm" data-dbact="done" data-id="${x.id}">배송 완료</button> <button class="btn btn-ghost btn-sm" data-dbact="cancel" data-id="${x.id}">취소·환불</button>` : '<span style="color:var(--dim)">—</span>';
+    const cls = { '결제완료': 's-ing', '배송중': 's-ship', '배송완료': 's-pass', '취소': 's-bad' };
+    if (!wrap()) return;
+    wrap().innerHTML = o.data.length ? `<table class="tbl"><thead><tr><th>주문번호</th><th>회원</th><th>상품</th><th>결제금액</th><th>상태</th><th>처리</th></tr></thead><tbody>${o.data.map(x => `<tr>
+      <td class="num">#${x.id}<br><small style="color:var(--mute)">${String(x.created_at).slice(0, 16).replace('T', ' ')}</small></td>
+      <td>${esc((who[x.user_id] || {}).name || '-')}<br><small style="color:var(--mute)">${esc((who[x.user_id] || {}).email || '')}</small></td>
+      <td>${it.data.filter(i => i.order_id === x.id).map(i => { const p = byDbId(i.product_id); return `${esc(p ? pname(p) : '상품 #' + i.product_id)} × ${i.qty}`; }).join('<br>')}</td>
+      <td class="num">${won(x.total)}</td><td><span class="stat ${cls[x.status] || ''}">${x.status}</span></td><td>${act(x)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty-s">아직 주문이 없습니다.</div>';
+  } catch (e) { if (wrap()) wrap().innerHTML = `<div class="empty-s" style="color:var(--red)">DB 오류: ${esc(sbMsg(e))}</div>`; }
+}
+async function sbAdminAct(act, id) {
+  try {
+    if (act === 'cancel') { const q = await db.rpc('shop_cancel_order', { p_order_id: id }); if (q.error) throw q.error; }
+    else { const q = await db.from(T.orders).update({ status: act === 'ship' ? DB_STATUS.ship : DB_STATUS.done }).eq('id', id).select('id'); if (q.error) throw q.error; if (!q.data.length) throw new Error('변경된 주문이 없습니다 (관리자 권한 확인)'); }   // UPDATE shop_orders SET status = ... WHERE id = ...
+    toast(`주문 <b>#${id}</b> 상태를 바꿨습니다.`); renderAdmin(); await sbRefresh(); refreshViews();
+  } catch (e) { toast('처리 실패: ' + esc(sbMsg(e))); }
+}
 function downloadCsv(name, headers, rows) {
   const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
   const text = '\ufeff' + [headers, ...rows].map(r => r.map(q).join(',')).join('\r\n');
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 500);
 }
-$('#adminOpen').addEventListener('click', () => { admResetArmed = false; renderAdmin(); openM('m-admin'); setTimeout(() => { const i = $('#admPw'); if (i) i.focus(); }, 50); });
+$('#adminOpen').addEventListener('click', () => { admResetArmed = false; if (SB && !sbUid) { toast('관리자 계정으로 먼저 로그인해 주세요.'); authTab('login'); openM('m-auth'); return; } renderAdmin(); openM('m-admin'); setTimeout(() => { const i = $('#admPw'); if (i) i.focus(); }, 50); });
 $('#admBody').addEventListener('submit', e => {
   if (e.target.id !== 'admLogin') return; e.preventDefault();
   if ($('#admPw').value === ADMIN_PASS) { try { sessionStorage.setItem('gs_adm', '1'); } catch {} renderAdmin(); }
@@ -1690,6 +1847,7 @@ function admOrderAct(act, id) {
   toast(`<b>${o.id}</b> → ${o.status}`);
 }
 $('#admBody').addEventListener('click', e => {
+  const da = e.target.closest('[data-dbact]'); if (da) return sbAdminAct(da.dataset.dbact, Number(da.dataset.id));
   const oa = e.target.closest('[data-oact]'); if (oa) return admOrderAct(oa.dataset.oact, oa.dataset.o);
   const t = e.target.closest('[data-adm]'); if (t) { admTab = t.dataset.adm; admResetArmed = false; return renderAdmin(); }
   const c = e.target.closest('[data-csv]');

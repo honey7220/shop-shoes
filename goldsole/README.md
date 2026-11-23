@@ -20,6 +20,15 @@
 - 등급·적립률: `TIERS`, 유효기간·쿠폰·리뷰 보상: `POINT_EXP_DAYS`, `WELCOME_COUPON` 등
 - 사업자 정보·약관 문구: `SITE`, `POLICIES`
 
+## Supabase 연결 (shop_ 표)
+1. SQL Editor 에서 `supabase/shop_supabase.sql` 실행 → 표 4개(shop_profiles · shop_products · shop_orders · shop_order_items)
+2. 이어서 `supabase/shop_extras.sql` 실행 → 포인트·재고·취소 처리 함수 + 쇼핑몰 상품 12개
+3. 사이트에서 가입 → `UPDATE public.shop_profiles SET role = 'admin' WHERE email = '내이메일';` 로 관리자 지정
+- 회원가입·로그인: Supabase Auth (이름·연락처는 가입 때 함께 전송, DB 트리거가 shop_profiles 에 저장)
+- 상품 목록: shop_products / 결제: shop_orders + shop_order_items / 등급·포인트: shop_profiles
+- 등급은 shop_profiles.grade 값과 같은 WELCOME · SILVER · GOLD · VIP 4단계, 주문 상태는 결제완료 · 배송중 · 배송완료 · 취소
+- 연결이 안 되면 브라우저 저장 방식(데모)으로 동작합니다
+
 ## 데이터 설계
 `data/schema.sql` (표 구조와 예시 쿼리), `data/products.csv`, `data/inventory.csv`
 
